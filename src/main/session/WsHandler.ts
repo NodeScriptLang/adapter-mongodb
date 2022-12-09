@@ -55,6 +55,7 @@ export class WsHandler {
     private async onWsClose() {
         try {
             await this.sessionContext.destroy();
+            this.logger.info('WS connection closed');
         } catch (error) {
             this.logger.warn('WS cleanup failed', { error });
         }

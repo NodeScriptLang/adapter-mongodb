@@ -14,6 +14,7 @@
         "clean:workspaces": "npm run clean --workspaces --if-present",
         "dev": "npm run compile && run-p dev:*",
         "dev:ts": "tsc -b -w",
+        "dev:http": "NODE_ENV=development node ./out/bin/http.js",
         "compile": "npm run clean && tsc -b",
         "build": "run-s compile",
         "lint": "eslint --ext=.js,.ts,.vue --cache .",
