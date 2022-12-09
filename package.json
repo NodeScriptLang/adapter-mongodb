@@ -15,6 +15,7 @@
         "dev": "npm run compile && run-p dev:*",
         "dev:ts": "tsc -b -w",
         "compile": "npm run clean && tsc -b",
+        "build": "run-s compile",
         "lint": "eslint --ext=.js,.ts,.vue --cache .",
         "test": "NODE_NO_WARNINGS=1 NODE_ENV=test mocha",
         "version": "run-s version:*",
