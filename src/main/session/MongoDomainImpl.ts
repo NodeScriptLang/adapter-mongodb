@@ -1,4 +1,4 @@
-import { MongoDomain, MongoFilter, MongoProjection, MongoSort } from '@nodescript/adapter-mongodb-protocol';
+import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjection, MongoSort, MongoUpdate } from '@nodescript/adapter-mongodb-protocol';
 import { dep } from '@nodescript/mesh';
 
 import { SessionContext } from './SessionContext.js';
@@ -21,7 +21,9 @@ export class MongoDomainImpl implements MongoDomain {
     }): Promise<{ document: any }> {
         const connection = this.sessionContext.requireConnection();
         const col = connection.db().collection(req.collection);
-        const document = await col.findOne(req.filter, req.projection);
+        const document = await col.findOne(req.filter, {
+            projection: req.projection,
+        });
         return { document };
     }
 
@@ -33,7 +35,125 @@ export class MongoDomainImpl implements MongoDomain {
         limit?: number;
         skip?: number;
     }): Promise<{ documents: any[] }> {
-        throw new Error('Method not implemented.');
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const documents = await col.find(req.filter, {
+            projection: req.projection,
+            sort: req.sort,
+            limit: req.limit,
+            skip: req.skip,
+        }).toArray();
+        return { documents };
+    }
+
+    async insertOne(req: {
+        collection: string;
+        document: MongoDocument;
+    }): Promise<{ insertedId: string }> {
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const res = await col.insertOne(req.document);
+        return { insertedId: res.insertedId.toString() };
+    }
+
+    async insertMany(req: { collection: string; documents: any[] }): Promise<{ insertedIds: string[] }> {
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const res = await col.insertMany(req.documents);
+        const insertedIds: string[] = [];
+        for (let i = 0; i < res.insertedCount; i++) {
+            insertedIds.push(res.insertedIds[i].toString());
+        }
+        return { insertedIds };
+    }
+
+    async updateOne(req: {
+        collection: string;
+        filter: MongoFilter;
+        update: MongoUpdate;
+        upsert: boolean;
+    }): Promise<{
+        matchedCount: number;
+        modifiedCount: number;
+        upsertedId?: string;
+    }> {
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const res = await col.updateOne(req.filter, req.update, { upsert: req.upsert });
+        return {
+            matchedCount: res.matchedCount,
+            modifiedCount: res.modifiedCount,
+            upsertedId: res.upsertedId?.toString(),
+        };
+    }
+
+    async updateMany(req: {
+        collection: string;
+        filter: MongoFilter;
+        update: MongoUpdate;
+    }): Promise<{
+        matchedCount: number;
+        modifiedCount: number;
+    }> {
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const res = await col.updateMany(req.filter, req.update);
+        return {
+            matchedCount: res.matchedCount,
+            modifiedCount: res.modifiedCount,
+        };
+    }
+
+    async replaceOne(req: {
+        collection: string;
+        filter: MongoFilter;
+        replacement: any;
+        upsert: boolean;
+    }): Promise<{
+        matchedCount: number;
+        modifiedCount: number;
+        upsertedId?: string;
+    }> {
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const res = await col.replaceOne(req.filter, req.replacement, { upsert: req.upsert });
+        return {
+            matchedCount: res.matchedCount,
+            modifiedCount: res.modifiedCount,
+            upsertedId: res.upsertedId?.toString(),
+        };
+    }
+
+    async deleteOne(req: { collection: string; filter: MongoFilter }): Promise<{ deletedCount: number }> {
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const res = await col.deleteOne(req.filter);
+        return {
+            deletedCount: res.deletedCount,
+        };
+    }
+
+    async deleteMany(req: { collection: string; filter: MongoFilter }): Promise<{ deletedCount: number }> {
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const res = await col.deleteMany(req.filter);
+        return {
+            deletedCount: res.deletedCount,
+        };
+    }
+
+    async aggregate(req: {
+        collection: string;
+        pipeline: MongoAggregate[];
+    }): Promise<{
+        documents: any[];
+    }> {
+        const connection = this.sessionContext.requireConnection();
+        const col = connection.db().collection(req.collection);
+        const documents = await col.aggregate(req.pipeline).toArray();
+        return {
+            documents,
+        };
     }
 
 }
