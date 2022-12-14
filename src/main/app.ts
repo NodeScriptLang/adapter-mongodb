@@ -6,6 +6,7 @@ import { Logger } from '@nodescript/logger';
 import { dep, Mesh } from '@nodescript/mesh';
 import { BaseApp, StandardLogger } from '@nodescript/microservice';
 
+import { Metrics } from './Metrics.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
 import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
 import { SessionContext } from './session/SessionContext.js';
@@ -25,6 +26,7 @@ export class App extends BaseApp {
         this.mesh.service(Logger, StandardLogger);
         this.mesh.service(HttpServer);
         this.mesh.service(WsServer);
+        this.mesh.service(Metrics);
     }
 
     createSessionScope() {

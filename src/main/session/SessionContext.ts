@@ -1,7 +1,14 @@
 import { ClientError } from '@nodescript/errors';
+import { Logger } from '@nodescript/logger';
+import { dep } from '@nodescript/mesh';
 import { MongoClient } from 'mongodb';
 
+import { Metrics } from '../Metrics.js';
+
 export class SessionContext {
+
+    @dep() private logger!: Logger;
+    @dep() private metrics!: Metrics;
 
     connection: MongoClient | null = null;
 
@@ -20,24 +27,35 @@ export class SessionContext {
     }
 
     protected async createConnection(url: string) {
-        const parsedUrl = new URL(url);
-        const effectiveUrl = new URL(`mongodb://${parsedUrl.host}${parsedUrl.pathname}`);
-        if (parsedUrl.username) {
-            effectiveUrl.username = parsedUrl.username;
-        }
-        if (parsedUrl.password) {
-            effectiveUrl.password = parsedUrl.password;
-        }
-        const client = new MongoClient(effectiveUrl.toString(), {
-            minPoolSize: 1,
-            maxPoolSize: 1,
-            ignoreUndefined: true,
-            writeConcern: {
-                w: 'majority',
+        try {
+            const parsedUrl = new URL(url);
+            const effectiveUrl = new URL(`${parsedUrl.protocol}//${parsedUrl.host}${parsedUrl.pathname}`);
+            this.logger.info(`Connecting to ${parsedUrl.host}`);
+            if (parsedUrl.username) {
+                effectiveUrl.username = parsedUrl.username;
             }
-        });
-        await client.connect();
-        return client;
+            if (parsedUrl.password) {
+                effectiveUrl.password = parsedUrl.password;
+            }
+            const client = new MongoClient(effectiveUrl.toString(), {
+                minPoolSize: 1,
+                maxPoolSize: 1,
+                ignoreUndefined: true,
+                writeConcern: {
+                    w: 'majority',
+                }
+            });
+            await client.connect();
+            this.metrics.connectionStats.incr(1, { type: 'connect' });
+            client.once('close', () => {
+                this.metrics.connectionStats.incr(1, { type: 'close' });
+            });
+            return client;
+        } catch (error) {
+            this.logger.error('Mongo connection failed', { error });
+            this.metrics.connectionStats.incr(1, { type: 'fail' });
+            throw error;
+        }
     }
 
     requireConnection() {

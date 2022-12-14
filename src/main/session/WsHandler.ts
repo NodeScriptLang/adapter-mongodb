@@ -4,6 +4,7 @@ import { dep } from '@nodescript/mesh';
 import { RpcEvent, RpcHandler, RpcMethodResponse } from '@nodescript/protocomm';
 import { WebSocket } from 'ws';
 
+import { Metrics } from '../Metrics.js';
 import { MongoProtocolImpl } from './MongoProtocolImpl.js';
 import { SessionContext } from './SessionContext.js';
 
@@ -11,6 +12,7 @@ export class WsHandler {
 
     @dep({ key: 'ws' }) private ws!: WebSocket;
     @dep() private logger!: Logger;
+    @dep() private metrics!: Metrics;
     @dep() private protocolImpl!: MongoProtocolImpl;
     @dep() private sessionContext!: SessionContext;
 
@@ -22,6 +24,12 @@ export class WsHandler {
             this.protocolImpl,
             res => this.sendResponse(res),
             evt => this.sendEvent(evt));
+        this.handler.methodStats.on(stats => {
+            this.metrics.methodLatency.addMillis(stats.latency, {
+                domain: stats.domain,
+                method: stats.method,
+            });
+        });
     }
 
     async init() {
