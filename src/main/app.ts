@@ -7,6 +7,7 @@ import { dep, Mesh } from '@nodescript/mesh';
 import { BaseApp, StandardLogger } from '@nodescript/microservice';
 
 import { Metrics } from './Metrics.js';
+import { HttpMetricsHandler } from './session/HttpMetricsHandler.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
 import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
 import { SessionContext } from './session/SessionContext.js';
@@ -33,6 +34,7 @@ export class App extends BaseApp {
         const mesh = new Mesh('Request');
         mesh.parent = this.mesh;
         mesh.service(SessionContext);
+        mesh.service(HttpMetricsHandler);
         mesh.service(WsHandler);
         mesh.service(MongoDomainImpl);
         mesh.service(MongoProtocolImpl);
@@ -40,6 +42,7 @@ export class App extends BaseApp {
     }
 
     async start() {
+        this.httpServer.addRequestHandler(HttpMetricsHandler);
         await this.httpServer.start();
         await this.wsServer.start();
     }
