@@ -1,7 +1,7 @@
 import { MongoProtocol, mongoProtocol } from '@nodescript/adapter-mongodb-protocol';
 import { Logger } from '@nodescript/logger';
-import { dep } from '@nodescript/mesh';
 import { RpcEvent, RpcHandler, RpcMethodResponse } from '@nodescript/protocomm';
+import { dep } from 'mesh-ioc';
 import { WebSocket } from 'ws';
 
 import { Metrics } from '../Metrics.js';

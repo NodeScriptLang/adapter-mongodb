@@ -1,6 +1,6 @@
 import { ClientError } from '@nodescript/errors';
 import { Logger } from '@nodescript/logger';
-import { dep } from '@nodescript/mesh';
+import { dep } from 'mesh-ioc';
 import { MongoClient } from 'mongodb';
 
 import { Metrics } from '../Metrics.js';

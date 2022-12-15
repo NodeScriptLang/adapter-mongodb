@@ -1,4 +1,4 @@
-import { Schema } from '@nodescript/schema';
+import { Schema } from 'airtight';
 
 export type MongoFilter = Record<string, any>;
 

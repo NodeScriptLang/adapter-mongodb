@@ -1,8 +1,8 @@
 import { config } from '@nodescript/config';
 import { HttpServer } from '@nodescript/http-server';
 import { Logger } from '@nodescript/logger';
-import { dep, Mesh } from '@nodescript/mesh';
 import { IncomingMessage } from 'http';
+import { dep, Mesh } from 'mesh-ioc';
 import { WebSocket, WebSocketServer } from 'ws';
 
 import { WsHandler } from './session/WsHandler.js';

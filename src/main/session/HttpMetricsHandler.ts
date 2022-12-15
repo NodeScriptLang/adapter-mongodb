@@ -1,7 +1,7 @@
 import { RequestHandler } from '@nodescript/http-server';
-import { dep, Mesh } from '@nodescript/mesh';
 import { generateMetricsReport } from '@nodescript/metrics';
 import { Context, Next } from 'koa';
+import { dep, Mesh } from 'mesh-ioc';
 
 export class HttpMetricsHandler implements RequestHandler {
 

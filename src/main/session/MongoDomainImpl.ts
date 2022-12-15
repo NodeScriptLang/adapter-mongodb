@@ -1,5 +1,5 @@
 import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjection, MongoSort, MongoUpdate } from '@nodescript/adapter-mongodb-protocol';
-import { dep } from '@nodescript/mesh';
+import { dep } from 'mesh-ioc';
 
 import { SessionContext } from './SessionContext.js';
 

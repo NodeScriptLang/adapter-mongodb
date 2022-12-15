@@ -1,5 +1,5 @@
 import { MongoProtocol } from '@nodescript/adapter-mongodb-protocol';
-import { dep } from '@nodescript/mesh';
+import { dep } from 'mesh-ioc';
 
 import { MongoDomainImpl } from './MongoDomainImpl.js';
 

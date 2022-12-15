@@ -3,8 +3,8 @@ import 'reflect-metadata';
 import { Config, ProcessEnvConfig } from '@nodescript/config';
 import { HttpServer } from '@nodescript/http-server';
 import { Logger } from '@nodescript/logger';
-import { dep, Mesh } from '@nodescript/mesh';
 import { BaseApp, StandardLogger } from '@nodescript/microservice';
+import { dep, Mesh } from 'mesh-ioc';
 
 import { Metrics } from './Metrics.js';
 import { HttpMetricsHandler } from './session/HttpMetricsHandler.js';

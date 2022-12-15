@@ -1,6 +1,6 @@
 import { config } from '@nodescript/config';
 import { Logger } from '@nodescript/logger';
-import { dep } from '@nodescript/mesh';
+import { dep } from 'mesh-ioc';
 import { Db, MongoClient } from 'mongodb';
 
 export class TestMongoDb {
