@@ -1,7 +1,7 @@
-import { config } from '@nodescript/config';
 import { HttpServer } from '@nodescript/http-server';
 import { Logger } from '@nodescript/logger';
 import { IncomingMessage } from 'http';
+import { config } from 'mesh-config';
 import { dep, Mesh } from 'mesh-ioc';
 import { WebSocket, WebSocketServer } from 'ws';
 

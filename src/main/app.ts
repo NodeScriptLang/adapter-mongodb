@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 
-import { Config, ProcessEnvConfig } from '@nodescript/config';
 import { HttpServer } from '@nodescript/http-server';
 import { Logger } from '@nodescript/logger';
 import { BaseApp, StandardLogger } from '@nodescript/microservice';
+import { Config, ProcessEnvConfig } from 'mesh-config';
 import { dep, Mesh } from 'mesh-ioc';
 
 import { Metrics } from './Metrics.js';
