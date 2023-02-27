@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import { dep, Mesh } from 'mesh-ioc';
 
 import { App } from '../main/app.js';
+import { ConnectionManager } from '../main/ConnectionManager.js';
 import { MongoDomainImpl } from '../main/session/MongoDomainImpl.js';
 import { SessionContext } from '../main/session/SessionContext.js';
 import { TestMongoDb } from './TestMongoDb.js';
@@ -16,6 +17,7 @@ export class TestRuntime {
     @dep({ cache: false }) Mongo!: MongoDomainImpl;
     @dep({ cache: false }) testMongoDb!: TestMongoDb;
     @dep({ cache: false }) sessionContext!: SessionContext;
+    @dep({ cache: false }) connectionManager!: ConnectionManager;
 
     async setup() {
         this.app = new App();
@@ -29,7 +31,7 @@ export class TestRuntime {
     }
 
     async teardown() {
-        await this.sessionContext.destroy();
+        await this.connectionManager.stop();
         await this.testMongoDb.stop();
         await this.app.stop();
     }
