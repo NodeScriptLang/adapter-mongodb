@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 
-import { HttpServer } from '@nodescript/http-server';
+import { HttpCorsHandler, HttpMetricsHandler, HttpServer, StandardHttpHandler } from '@nodescript/http-server';
 import { Logger } from '@nodescript/logger';
 import { BaseApp, StandardLogger } from '@nodescript/microservice';
 import { Config, ProcessEnvConfig } from 'mesh-config';
 import { dep, Mesh } from 'mesh-ioc';
 
+import { AppHttpHandler } from './AppHttpHandler.js';
 import { ConnectionManager } from './ConnectionManager.js';
 import { Metrics } from './Metrics.js';
-import { HttpMetricsHandler } from './session/HttpMetricsHandler.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
 import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
 import { SessionContext } from './session/SessionContext.js';
@@ -31,14 +31,16 @@ export class App extends BaseApp {
         this.mesh.service(WsServer);
         this.mesh.service(Metrics);
         this.mesh.service(ConnectionManager);
+        this.mesh.service(StandardHttpHandler);
+        this.mesh.service(HttpCorsHandler);
+        this.mesh.service(HttpMetricsHandler);
     }
 
     createSessionScope() {
         const mesh = new Mesh('Request');
         mesh.parent = this.mesh;
-        mesh.service(HttpServer.HANDLER, HttpMetricsHandler);
+        mesh.service(HttpServer.HANDLER, AppHttpHandler);
         mesh.service(SessionContext);
-        mesh.service(HttpMetricsHandler);
         mesh.service(WsHandler);
         mesh.service(MongoDomainImpl);
         mesh.service(MongoProtocolImpl);
