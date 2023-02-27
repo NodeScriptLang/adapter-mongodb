@@ -21,8 +21,8 @@ export class App extends BaseApp {
 
     constructor() {
         super(new Mesh('App'));
-        this.mesh.constant('httpRequestScope', () => this.createSessionScope());
-        this.mesh.constant('webSocketScope', () => this.createSessionScope());
+        this.mesh.constant(HttpServer.SCOPE, () => this.createSessionScope());
+        this.mesh.constant(WsServer.SCOPE, () => this.createSessionScope());
         this.mesh.service(Config, ProcessEnvConfig);
         this.mesh.service(Logger, StandardLogger);
         this.mesh.service(HttpServer);

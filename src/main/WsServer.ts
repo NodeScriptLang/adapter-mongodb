@@ -7,13 +7,17 @@ import { WebSocket, WebSocketServer } from 'ws';
 
 import { WsHandler } from './session/WsHandler.js';
 
+const WS_SCOPE_KEY = 'WsServer.scope';
+
 export class WsServer {
+
+    static SCOPE = WS_SCOPE_KEY;
 
     @config({ default: '/ws' }) WS_PREFIX!: string;
 
     @dep() private httpServer!: HttpServer;
     @dep() private logger!: Logger;
-    @dep({ key: 'webSocketScope' })
+    @dep({ key: WS_SCOPE_KEY })
     private createMesh!: () => Mesh;
 
     private wss: WebSocketServer | null = null;
