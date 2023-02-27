@@ -4,7 +4,7 @@ export class Metrics {
 
     @metric()
     connectionStats = new CounterMetric<{
-        type: 'connect' | 'close' | 'fail';
+        type: 'connect' | 'connectionCreated' | 'connectionClosed' | 'close' | 'fail';
     }>('nodescript_mongodb_adapter_connections', 'MongoDB adapter connections');
 
     @metric()

@@ -9,7 +9,7 @@ jobs:
   build:
     uses: ubio/github-actions/.github/workflows/ci-build.yaml@master
     with:
-      name: NodeScript Fetch Service
+      name: NodeScript MongoDB Adapter
       image: gcr.io/automation-cloud-registry/nodescript-adapter-mongodb
       ref: ${{ github.ref }}
       file: Dockerfile

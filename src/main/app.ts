@@ -6,6 +6,7 @@ import { BaseApp, StandardLogger } from '@nodescript/microservice';
 import { Config, ProcessEnvConfig } from 'mesh-config';
 import { dep, Mesh } from 'mesh-ioc';
 
+import { ConnectionManager } from './ConnectionManager.js';
 import { Metrics } from './Metrics.js';
 import { HttpMetricsHandler } from './session/HttpMetricsHandler.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
@@ -18,6 +19,7 @@ export class App extends BaseApp {
 
     @dep() httpServer!: HttpServer;
     @dep() wsServer!: WsServer;
+    @dep() connectionManager!: ConnectionManager;
 
     constructor() {
         super(new Mesh('App'));
@@ -28,6 +30,7 @@ export class App extends BaseApp {
         this.mesh.service(HttpServer);
         this.mesh.service(WsServer);
         this.mesh.service(Metrics);
+        this.mesh.service(ConnectionManager);
     }
 
     createSessionScope() {
@@ -43,11 +46,13 @@ export class App extends BaseApp {
     }
 
     async start() {
+        await this.connectionManager.start();
         await this.httpServer.start();
         await this.wsServer.start();
     }
 
     async stop() {
+        await this.connectionManager.stop();
         await this.httpServer.stop();
         await this.wsServer.stop();
     }
