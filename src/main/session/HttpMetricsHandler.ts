@@ -1,16 +1,15 @@
-import { RequestHandler } from '@nodescript/http-server';
+import { HttpContext, HttpHandler, HttpNext } from '@nodescript/http-server';
 import { generateMetricsReport } from '@nodescript/metrics';
-import { Context, Next } from 'koa';
 import { dep, Mesh } from 'mesh-ioc';
 
-export class HttpMetricsHandler implements RequestHandler {
+export class HttpMetricsHandler implements HttpHandler {
 
     @dep() private mesh!: Mesh;
 
-    async handle(ctx: Context, next: Next) {
+    async handle(ctx: HttpContext, next: HttpNext) {
         if (ctx.method === 'GET' && ctx.path === '/metrics') {
             const report = generateMetricsReport(this.mesh);
-            ctx.body = report;
+            ctx.requestBody = report;
             return;
         }
         return next();

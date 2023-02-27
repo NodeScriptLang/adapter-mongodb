@@ -33,6 +33,7 @@ export class App extends BaseApp {
     createSessionScope() {
         const mesh = new Mesh('Request');
         mesh.parent = this.mesh;
+        mesh.service(HttpServer.HANDLER, HttpMetricsHandler);
         mesh.service(SessionContext);
         mesh.service(HttpMetricsHandler);
         mesh.service(WsHandler);
@@ -42,7 +43,6 @@ export class App extends BaseApp {
     }
 
     async start() {
-        this.httpServer.addRequestHandler(HttpMetricsHandler);
         await this.httpServer.start();
         await this.wsServer.start();
     }

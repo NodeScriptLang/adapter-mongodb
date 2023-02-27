@@ -22,7 +22,7 @@ export class WsServer {
         if (this.wss) {
             return;
         }
-        const { server } = this.httpServer;
+        const server = this.httpServer.getServer();
         if (!server) {
             throw new Error('WsServer should start after HttpServer');
         }
