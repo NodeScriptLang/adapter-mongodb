@@ -1,5 +1,4 @@
 {
     "reporter": "spec",
-    "spec": "./out/**/*.test.js",
-    "timeout": 5000
+    "spec": "./out/**/*.test.js"
 }
