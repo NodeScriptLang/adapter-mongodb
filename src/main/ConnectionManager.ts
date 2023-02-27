@@ -17,6 +17,12 @@ export class ConnectionManager {
     @config({ default: 60_000 })
     INACTIVE_TIMEOUT_MS!: number;
 
+    @config({ default: 3_000 })
+    CONNECT_TIMEOUT_MS!: number;
+
+    @config({ default: 60_000 })
+    SOCKET_TIMEOUT_MS!: number;
+
     @dep() private logger!: Logger;
     @dep() private metrics!: Metrics;
 
@@ -63,8 +69,8 @@ export class ConnectionManager {
                 waitQueueTimeoutMS: 0,
                 ignoreUndefined: true,
                 heartbeatFrequencyMS: 0,
-                connectTimeoutMS: 3000,
-                socketTimeoutMS: 3000,
+                connectTimeoutMS: this.CONNECT_TIMEOUT_MS,
+                socketTimeoutMS: this.SOCKET_TIMEOUT_MS,
                 writeConcern: {
                     w: 'majority',
                 }
