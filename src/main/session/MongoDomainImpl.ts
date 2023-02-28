@@ -1,15 +1,23 @@
 import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjection, MongoSort, MongoUpdate } from '@nodescript/adapter-mongodb-protocol';
+import { AccessDeniedError } from '@nodescript/errors';
+import { config } from 'mesh-config';
 import { dep } from 'mesh-ioc';
 
 import { SessionContext } from './SessionContext.js';
 
 export class MongoDomainImpl implements MongoDomain {
 
+    @config({ default: '' }) AUTH_SECRET!: string;
+
     @dep() sessionContext!: SessionContext;
 
     async connect(req: {
         url: string;
+        secret: string;
     }): Promise<{}> {
+        if (this.AUTH_SECRET && req.secret !== this.AUTH_SECRET) {
+            throw new AccessDeniedError('Incorrect secret');
+        }
         await this.sessionContext.connect(req.url);
         return {};
     }
