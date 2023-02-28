@@ -14,6 +14,7 @@ describe('MongoDomain', () => {
             });
             await runtime.Mongo.connect({
                 url: runtime.testMongoDb.MONGO_URL,
+                secret: '',
             });
             const { document } = await runtime.Mongo.findOne({
                 collection: 'users',
