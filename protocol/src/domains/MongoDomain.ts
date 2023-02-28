@@ -11,7 +11,7 @@ export interface MongoDomain {
 
     connect(req: {
         url: string;
-        secret: string;
+        secret?: string;
     }): Promise<{}>;
 
     findOne(req: {
@@ -108,7 +108,10 @@ export const MongoDomain: DomainDef<MongoDomain> = {
             type: 'command',
             params: {
                 url: { type: 'string' },
-                secret: { type: 'string' },
+                secret: {
+                    type: 'string',
+                    optional: true,
+                },
             },
             returns: {},
         },
