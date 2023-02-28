@@ -20,9 +20,6 @@ export class ConnectionManager {
     @config({ default: 3_000 })
     CONNECT_TIMEOUT_MS!: number;
 
-    @config({ default: 60_000 })
-    SOCKET_TIMEOUT_MS!: number;
-
     @dep() private logger!: Logger;
     @dep() private metrics!: Metrics;
 
@@ -65,12 +62,10 @@ export class ConnectionManager {
             const client = new MongoClient(parsedUrl.toString(), {
                 minPoolSize: 0,
                 maxPoolSize: this.POOL_SIZE,
-                // maxIdleTimeMS: this.SOCKET_TIMEOUT_MS,
                 waitQueueTimeoutMS: 0,
                 ignoreUndefined: true,
-                // heartbeatFrequencyMS: 0,
+                heartbeatFrequencyMS: 30_000,
                 connectTimeoutMS: this.CONNECT_TIMEOUT_MS,
-                // socketTimeoutMS: this.SOCKET_TIMEOUT_MS,
                 writeConcern: {
                     w: 'majority',
                 }
