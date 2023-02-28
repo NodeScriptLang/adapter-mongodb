@@ -65,12 +65,12 @@ export class ConnectionManager {
             const client = new MongoClient(parsedUrl.toString(), {
                 minPoolSize: 0,
                 maxPoolSize: this.POOL_SIZE,
-                maxIdleTimeMS: 0, // Note: this doesn't actively close connections, so shouldn't be used
+                // maxIdleTimeMS: this.SOCKET_TIMEOUT_MS,
                 waitQueueTimeoutMS: 0,
                 ignoreUndefined: true,
-                heartbeatFrequencyMS: 0,
+                // heartbeatFrequencyMS: 0,
                 connectTimeoutMS: this.CONNECT_TIMEOUT_MS,
-                socketTimeoutMS: this.SOCKET_TIMEOUT_MS,
+                // socketTimeoutMS: this.SOCKET_TIMEOUT_MS,
                 writeConcern: {
                     w: 'majority',
                 }
@@ -116,6 +116,7 @@ export class ConnectionManager {
         }
         while (this.running) {
             await new Promise(resolve => setTimeout(resolve, this.SWEEP_INTERVAL_MS).unref());
+            this.logger.info('Sweep: closing idle connections');
             this.closeIdleConnections();
         }
     }
