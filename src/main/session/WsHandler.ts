@@ -25,9 +25,14 @@ export class WsHandler {
             res => this.sendResponse(res),
             evt => this.sendEvent(evt));
         this.handler.methodStats.on(stats => {
+            const { error } = stats;
+            if (error) {
+                this.logger.warn(`${stats.domain}.${stats.method} error (WS)`, { error });
+            }
             this.metrics.methodLatency.addMillis(stats.latency, {
                 domain: stats.domain,
                 method: stats.method,
+                error,
             });
         });
     }

@@ -11,6 +11,7 @@ export class Metrics {
     methodLatency = new HistogramMetric<{
         domain: string;
         method: string;
+        error?: string;
     }>('nodescript_mongodb_adapter_latency', 'MondoDB adapter method latency');
 
 }
