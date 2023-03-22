@@ -72,7 +72,7 @@ export class ConnectionManager {
                 maxIdleTimeMS: this.MAX_IDLE_TIMEOUT_MS,
                 writeConcern: {
                     w: 'majority',
-                }
+                },
             });
             await client.connect();
             client.on('connectionCreated', () => {
