@@ -15,6 +15,7 @@ export interface MongoDomain {
     }): Promise<{}>;
 
     findOne(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
@@ -23,6 +24,7 @@ export interface MongoDomain {
     }>;
 
     findMany(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
@@ -34,6 +36,7 @@ export interface MongoDomain {
     }>;
 
     insertOne(req: {
+        databaseUrl?: string;
         collection: string;
         document: MongoDocument;
     }): Promise<{
@@ -41,6 +44,7 @@ export interface MongoDomain {
     }>;
 
     insertMany(req: {
+        databaseUrl?: string;
         collection: string;
         documents: MongoDocument[];
     }): Promise<{
@@ -48,6 +52,7 @@ export interface MongoDomain {
     }>;
 
     updateOne(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         update: MongoUpdate;
@@ -59,6 +64,7 @@ export interface MongoDomain {
     }>;
 
     updateMany(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         update: MongoUpdate;
@@ -68,6 +74,7 @@ export interface MongoDomain {
     }>;
 
     replaceOne(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         replacement: MongoDocument;
@@ -79,6 +86,7 @@ export interface MongoDomain {
     }>;
 
     deleteOne(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
     }): Promise<{
@@ -86,6 +94,7 @@ export interface MongoDomain {
     }>;
 
     deleteMany(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
     }): Promise<{
@@ -93,6 +102,7 @@ export interface MongoDomain {
     }>;
 
     aggregate(req: {
+        databaseUrl?: string;
         collection: string;
         pipeline: MongoAggregate[];
     }): Promise<{
@@ -118,6 +128,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         findOne: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 filter: MongoFilterSchema.schema,
                 projection: {
@@ -135,6 +146,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         findMany: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 filter: MongoFilterSchema.schema,
                 projection: {
@@ -164,6 +176,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         insertOne: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 document: MongoDocumentSchema.schema,
             },
@@ -174,6 +187,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         insertMany: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 documents: {
                     type: 'array',
@@ -190,6 +204,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         updateOne: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 filter: MongoFilterSchema.schema,
                 update: MongoUpdateSchema.schema,
@@ -207,6 +222,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         updateMany: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 filter: MongoFilterSchema.schema,
                 update: MongoUpdateSchema.schema,
@@ -219,6 +235,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         replaceOne: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 filter: MongoFilterSchema.schema,
                 replacement: MongoDocumentSchema.schema,
@@ -236,6 +253,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         deleteOne: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 filter: MongoFilterSchema.schema,
             },
@@ -246,6 +264,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         deleteMany: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 filter: MongoFilterSchema.schema,
             },
@@ -256,6 +275,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
         aggregate: {
             type: 'command',
             params: {
+                databaseUrl: { type: 'string', optional: true },
                 collection: { type: 'string' },
                 pipeline: {
                     type: 'array',
