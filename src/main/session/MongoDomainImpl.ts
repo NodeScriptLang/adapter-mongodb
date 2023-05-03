@@ -1,34 +1,33 @@
 import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjection, MongoSort, MongoUpdate } from '@nodescript/adapter-mongodb-protocol';
-import { AccessDeniedError } from '@nodescript/errors';
 import { EJSON } from 'bson';
-import { config } from 'mesh-config';
 import { dep } from 'mesh-ioc';
 
+import { AuthManager } from '../AuthManager.js';
+import { ConnectionManager } from '../ConnectionManager.js';
 import { SessionContext } from './SessionContext.js';
 
 export class MongoDomainImpl implements MongoDomain {
 
-    @config({ default: '' }) AUTH_SECRET!: string;
-
-    @dep() sessionContext!: SessionContext;
+    @dep() private authManager!: AuthManager;
+    @dep() private sessionContext!: SessionContext;
+    @dep() private connectionManager!: ConnectionManager;
 
     async connect(req: {
         url: string;
         secret: string;
     }): Promise<{}> {
-        if (this.AUTH_SECRET && req.secret !== this.AUTH_SECRET) {
-            throw new AccessDeniedError('Incorrect secret');
-        }
+        this.authManager.authenticate(req.secret);
         await this.sessionContext.connect(req.url);
         return {};
     }
 
     async findOne(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
     }): Promise<{ document: any }> {
-        const connection = this.sessionContext.requireConnection();
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
         const document = await col.findOne(filter, {
@@ -40,6 +39,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async findMany(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
@@ -47,7 +47,7 @@ export class MongoDomainImpl implements MongoDomain {
         limit?: number;
         skip?: number;
     }): Promise<{ documents: any[] }> {
-        const connection = this.sessionContext.requireConnection();
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
         const documents = await col.find(filter, {
@@ -62,10 +62,11 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async insertOne(req: {
+        databaseUrl?: string;
         collection: string;
         document: MongoDocument;
     }): Promise<{ insertedId: string }> {
-        const connection = this.sessionContext.requireConnection();
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const document = EJSON.deserialize(req.document);
         const res = await col.insertOne(document);
@@ -74,8 +75,12 @@ export class MongoDomainImpl implements MongoDomain {
         };
     }
 
-    async insertMany(req: { collection: string; documents: any[] }): Promise<{ insertedIds: string[] }> {
-        const connection = this.sessionContext.requireConnection();
+    async insertMany(req: {
+        databaseUrl?: string;
+        collection: string;
+        documents: any[];
+    }): Promise<{ insertedIds: string[] }> {
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const documents = EJSON.deserialize(req.documents);
         const res = await col.insertMany(documents);
@@ -89,6 +94,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async updateOne(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         update: MongoUpdate;
@@ -98,7 +104,7 @@ export class MongoDomainImpl implements MongoDomain {
         modifiedCount: number;
         upsertedId?: string;
     }> {
-        const connection = this.sessionContext.requireConnection();
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
         const update = EJSON.deserialize(req.update);
@@ -111,6 +117,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async updateMany(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         update: MongoUpdate;
@@ -118,7 +125,7 @@ export class MongoDomainImpl implements MongoDomain {
         matchedCount: number;
         modifiedCount: number;
     }> {
-        const connection = this.sessionContext.requireConnection();
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
         const update = EJSON.deserialize(req.update);
@@ -130,6 +137,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async replaceOne(req: {
+        databaseUrl?: string;
         collection: string;
         filter: MongoFilter;
         replacement: any;
@@ -139,7 +147,7 @@ export class MongoDomainImpl implements MongoDomain {
         modifiedCount: number;
         upsertedId?: string;
     }> {
-        const connection = this.sessionContext.requireConnection();
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
         const replacement = EJSON.deserialize(req.replacement);
@@ -151,8 +159,12 @@ export class MongoDomainImpl implements MongoDomain {
         };
     }
 
-    async deleteOne(req: { collection: string; filter: MongoFilter }): Promise<{ deletedCount: number }> {
-        const connection = this.sessionContext.requireConnection();
+    async deleteOne(req: {
+        databaseUrl?: string;
+        collection: string;
+        filter: MongoFilter;
+    }): Promise<{ deletedCount: number }> {
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
         const res = await col.deleteOne(filter);
@@ -161,8 +173,12 @@ export class MongoDomainImpl implements MongoDomain {
         };
     }
 
-    async deleteMany(req: { collection: string; filter: MongoFilter }): Promise<{ deletedCount: number }> {
-        const connection = this.sessionContext.requireConnection();
+    async deleteMany(req: {
+        databaseUrl?: string;
+        collection: string;
+        filter: MongoFilter;
+    }): Promise<{ deletedCount: number }> {
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
         const res = await col.deleteMany(filter);
@@ -172,18 +188,26 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async aggregate(req: {
+        databaseUrl?: string;
         collection: string;
         pipeline: MongoAggregate[];
     }): Promise<{
         documents: any[];
     }> {
-        const connection = this.sessionContext.requireConnection();
+        const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const pipeline = EJSON.deserialize(req.pipeline);
         const documents = await col.aggregate(pipeline).toArray();
         return {
             documents: EJSON.serialize(documents) as any[]
         };
+    }
+
+    private async getConnection(databaseUrl?: string) {
+        if (!databaseUrl) {
+            return this.sessionContext.requireConnection();
+        }
+        return await this.connectionManager.getConnection(databaseUrl);
     }
 
 }

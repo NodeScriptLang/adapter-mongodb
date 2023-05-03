@@ -7,9 +7,11 @@ import { Config, ProcessEnvConfig } from 'mesh-config';
 import { dep, Mesh } from 'mesh-ioc';
 
 import { AppHttpHandler } from './AppHttpHandler.js';
+import { AuthManager } from './AuthManager.js';
 import { ConnectionManager } from './ConnectionManager.js';
 import { Metrics } from './Metrics.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
+import { MongoProtocolHandler } from './session/MongoProtocolHandler.js';
 import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
 import { SessionContext } from './session/SessionContext.js';
 import { WsHandler } from './session/WsHandler.js';
@@ -30,6 +32,7 @@ export class App extends BaseApp {
         this.mesh.service(HttpServer);
         this.mesh.service(WsServer);
         this.mesh.service(Metrics);
+        this.mesh.service(AuthManager);
         this.mesh.service(ConnectionManager);
         this.mesh.service(StandardHttpHandler);
         this.mesh.service(HttpCorsHandler);
@@ -44,6 +47,7 @@ export class App extends BaseApp {
         mesh.service(WsHandler);
         mesh.service(MongoDomainImpl);
         mesh.service(MongoProtocolImpl);
+        mesh.service(MongoProtocolHandler);
         return mesh;
     }
 
