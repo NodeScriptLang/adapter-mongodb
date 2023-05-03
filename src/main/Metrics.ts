@@ -9,6 +9,7 @@ export class Metrics {
 
     @metric()
     methodLatency = new HistogramMetric<{
+        transport: 'http' | 'ws';
         domain: string;
         method: string;
         error?: string;

@@ -30,6 +30,7 @@ export class WsHandler {
                 this.logger.warn(`${stats.domain}.${stats.method} error (WS)`, { error });
             }
             this.metrics.methodLatency.addMillis(stats.latency, {
+                transport: 'ws',
                 domain: stats.domain,
                 method: stats.method,
                 error,
