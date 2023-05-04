@@ -10,10 +10,10 @@ import { AuthManager } from './AuthManager.js';
 import { ConnectionManager } from './ConnectionManager.js';
 import { Metrics } from './Metrics.js';
 import { AppHttpHandler } from './session/AppHttpHandler.js';
+import { AuthHandler } from './session/AuthHandler.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
 import { MongoProtocolHandler } from './session/MongoProtocolHandler.js';
 import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
-import { AuthHandler } from './session/AuthHandler.js';
 
 export class App extends BaseApp {
 
