@@ -2,27 +2,21 @@ import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjectio
 import { EJSON } from 'bson';
 import { dep } from 'mesh-ioc';
 
-import { AuthManager } from '../AuthManager.js';
 import { ConnectionManager } from '../ConnectionManager.js';
-import { SessionContext } from './SessionContext.js';
 
 export class MongoDomainImpl implements MongoDomain {
 
-    @dep() private authManager!: AuthManager;
-    @dep() private sessionContext!: SessionContext;
     @dep() private connectionManager!: ConnectionManager;
 
     async connect(req: {
-        url: string;
-        secret: string;
+        databaseUrl: string;
     }): Promise<{}> {
-        this.authManager.authenticate(req.secret);
-        await this.sessionContext.connect(req.url);
+        await this.getConnection(req.databaseUrl);
         return {};
     }
 
     async findOne(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
@@ -39,7 +33,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async findMany(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
@@ -62,7 +56,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async insertOne(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         document: MongoDocument;
     }): Promise<{ insertedId: string }> {
@@ -76,7 +70,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async insertMany(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         documents: any[];
     }): Promise<{ insertedIds: string[] }> {
@@ -94,7 +88,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async updateOne(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         filter: MongoFilter;
         update: MongoUpdate;
@@ -117,7 +111,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async updateMany(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         filter: MongoFilter;
         update: MongoUpdate;
@@ -137,7 +131,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async replaceOne(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         filter: MongoFilter;
         replacement: any;
@@ -160,7 +154,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async deleteOne(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         filter: MongoFilter;
     }): Promise<{ deletedCount: number }> {
@@ -174,7 +168,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async deleteMany(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         filter: MongoFilter;
     }): Promise<{ deletedCount: number }> {
@@ -188,7 +182,7 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     async aggregate(req: {
-        databaseUrl?: string;
+        databaseUrl: string;
         collection: string;
         pipeline: MongoAggregate[];
     }): Promise<{
@@ -203,10 +197,7 @@ export class MongoDomainImpl implements MongoDomain {
         };
     }
 
-    private async getConnection(databaseUrl?: string) {
-        if (!databaseUrl) {
-            return this.sessionContext.requireConnection();
-        }
+    private async getConnection(databaseUrl: string) {
         return await this.connectionManager.getConnection(databaseUrl);
     }
 

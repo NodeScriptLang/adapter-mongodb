@@ -11,16 +11,16 @@ export class ConnectionManager {
     @config({ default: 5 })
     POOL_SIZE!: number;
 
-    @config({ default: 5000 })
+    @config({ default: 10_000 })
     SWEEP_INTERVAL_MS!: number;
+
+    @config({ default: 120_000 })
+    SWEEP_INACTIVE_TIMEOUT_MS!: number;
 
     @config({ default: 60_000 })
     MAX_IDLE_TIMEOUT_MS!: number;
 
-    @config({ default: 60_000 })
-    INACTIVE_TIMEOUT_MS!: number;
-
-    @config({ default: 3_000 })
+    @config({ default: 5_000 })
     CONNECT_TIMEOUT_MS!: number;
 
     @dep() private logger!: Logger;
@@ -101,8 +101,7 @@ export class ConnectionManager {
 
     private closeIdleConnections() {
         for (const connection of this.connectionMap.values()) {
-            const idle = connection.sessionsCount <= 0 &&
-                Date.now() > connection.lastActiveAt + this.INACTIVE_TIMEOUT_MS;
+            const idle = Date.now() > connection.lastActiveAt + this.SWEEP_INACTIVE_TIMEOUT_MS;
             if (idle) {
                 this.closeConnection(connection);
             }
