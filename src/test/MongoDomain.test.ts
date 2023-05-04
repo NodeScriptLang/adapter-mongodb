@@ -12,11 +12,8 @@ describe('MongoDomain', () => {
                 name: 'Joe',
                 email: 'joeatlas@example.com',
             });
-            await runtime.Mongo.connect({
-                url: runtime.testMongoDb.MONGO_URL,
-                secret: '',
-            });
             const { document } = await runtime.Mongo.findOne({
+                databaseUrl: runtime.testMongoDb.MONGO_URL,
                 collection: 'users',
                 filter: {
                     _id: 'joe',
@@ -46,11 +43,8 @@ describe('MongoDomain', () => {
                 email: 'janeatlas@example.com',
                 bornAt: new Date('1999-01-01T00:00:00Z'),
             });
-            await runtime.Mongo.connect({
-                url: runtime.testMongoDb.MONGO_URL,
-                secret: '',
-            });
             const { documents } = await runtime.Mongo.findMany({
+                databaseUrl: runtime.testMongoDb.MONGO_URL,
                 collection: 'users',
                 filter: {
                     bornAt: {

@@ -4,7 +4,6 @@ import { dep, Mesh } from 'mesh-ioc';
 import { App } from '../main/app.js';
 import { ConnectionManager } from '../main/ConnectionManager.js';
 import { MongoDomainImpl } from '../main/session/MongoDomainImpl.js';
-import { SessionContext } from '../main/session/SessionContext.js';
 import { TestMongoDb } from './TestMongoDb.js';
 
 config({ path: '.env' });
@@ -16,7 +15,6 @@ export class TestRuntime {
 
     @dep({ cache: false }) Mongo!: MongoDomainImpl;
     @dep({ cache: false }) testMongoDb!: TestMongoDb;
-    @dep({ cache: false }) sessionContext!: SessionContext;
     @dep({ cache: false }) connectionManager!: ConnectionManager;
 
     async setup() {

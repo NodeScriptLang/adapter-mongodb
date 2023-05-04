@@ -6,7 +6,6 @@ import { MongoClient } from 'mongodb';
  */
 export class MongoConnection {
 
-    sessionsCount = 0;
     lastActiveAt = Date.now();
 
     constructor(
