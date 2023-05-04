@@ -13,6 +13,7 @@ import { AppHttpHandler } from './session/AppHttpHandler.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
 import { MongoProtocolHandler } from './session/MongoProtocolHandler.js';
 import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
+import { AuthHandler } from './session/AuthHandler.js';
 
 export class App extends BaseApp {
 
@@ -37,6 +38,7 @@ export class App extends BaseApp {
         const mesh = new Mesh('Request');
         mesh.parent = this.mesh;
         mesh.service(HttpServer.HANDLER, AppHttpHandler);
+        mesh.service(AuthHandler);
         mesh.service(MongoDomainImpl);
         mesh.service(MongoProtocolImpl);
         mesh.service(MongoProtocolHandler);
