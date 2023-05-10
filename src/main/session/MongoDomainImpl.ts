@@ -191,7 +191,9 @@ export class MongoDomainImpl implements MongoDomain {
         const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const pipeline = EJSON.deserialize(req.pipeline);
-        const documents = await col.aggregate(pipeline).toArray();
+        const documents = await col.aggregate(pipeline, {
+            allowDiskUse: true,
+        }).toArray();
         return {
             documents: EJSON.serialize(documents) as any[]
         };
