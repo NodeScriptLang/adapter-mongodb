@@ -47,11 +47,6 @@ export class ConnectionManager {
     async getConnection(url: string): Promise<MongoConnection> {
         try {
             const parsedUrl = new URL(url);
-            const connectionKey = parsedUrl.host;
-            const existing = this.connectionMap.get(connectionKey);
-            if (existing) {
-                return existing;
-            }
             parsedUrl.searchParams.delete('connectTimeoutMS');
             parsedUrl.searchParams.delete('heartbeatFrequencyMS');
             parsedUrl.searchParams.delete('ignoreUndefined');
@@ -62,6 +57,11 @@ export class ConnectionManager {
             parsedUrl.searchParams.delete('w');
             parsedUrl.searchParams.delete('waitQueueTimeoutMS');
             parsedUrl.searchParams.delete('writeConcern');
+            const connectionKey = parsedUrl.href;
+            const existing = this.connectionMap.get(connectionKey);
+            if (existing) {
+                return existing;
+            }
             const client = new MongoClient(parsedUrl.toString(), {
                 minPoolSize: 0,
                 maxPoolSize: this.POOL_SIZE,
