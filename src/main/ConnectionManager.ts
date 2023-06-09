@@ -3,6 +3,7 @@ import { config } from 'mesh-config';
 import { dep } from 'mesh-ioc';
 import { MongoClient } from 'mongodb';
 
+import { Env } from './Env.js';
 import { Metrics } from './Metrics.js';
 import { MongoConnection } from './util/MongoConnection.js';
 
@@ -25,6 +26,7 @@ export class ConnectionManager {
 
     @dep() private logger!: Logger;
     @dep() private metrics!: Metrics;
+    @dep() private env!: Env;
 
     private connectionMap = new Map<string, MongoConnection>();
     private running = false;
@@ -76,19 +78,31 @@ export class ConnectionManager {
             });
             await client.connect();
             client.on('connectionCreated', () => {
-                this.metrics.connectionStats.incr(1, { type: 'connectionCreated' });
+                this.metrics.connectionStats.incr(1, {
+                    appId: this.env.APP_ID,
+                    type: 'connectionCreated'
+                });
             });
             client.on('connectionClosed', () => {
-                this.metrics.connectionStats.incr(1, { type: 'connectionClosed' });
+                this.metrics.connectionStats.incr(1, {
+                    appId: this.env.APP_ID,
+                    type: 'connectionClosed',
+                });
             });
             const connection = new MongoConnection(connectionKey, client);
             this.connectionMap.set(connectionKey, connection);
-            this.metrics.connectionStats.incr(1, { type: 'connect' });
+            this.metrics.connectionStats.incr(1, {
+                appId: this.env.APP_ID,
+                type: 'connect',
+            });
             this.logger.info(`Mongo connection created`, { connectionKey });
             return connection;
         } catch (error) {
             this.logger.error('Mongo connection failed', { error });
-            this.metrics.connectionStats.incr(1, { type: 'fail' });
+            this.metrics.connectionStats.incr(1, {
+                appId: this.env.APP_ID,
+                type: 'fail',
+            });
             throw error;
         }
     }

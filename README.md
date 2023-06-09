@@ -36,6 +36,8 @@ NodeScript MongoDB Adapter can be configured with the following environment vari
 
 - **SWEEP_INACTIVE_TIMEOUT_MS** (default: 120_000) and **SWEEP_INTERVAL_MS** (default: 10_000) — adapter will periodically sweep the open connections and close them if they are inactive for specified amount of time.
 
+- **APP_ID** — arbitrary string added to Prometheus metrics as an `appId` label.
+
 ## Resource Requests & Limits
 
 MongoDB Adapter acts as a thin proxy between HTTP and MongoDB driver. When it comes to configure the compute resources it's best to keep the following in mind:
@@ -47,3 +49,19 @@ MongoDB Adapter acts as a thin proxy between HTTP and MongoDB driver. When it co
 - The memory limit should be set to roughly x2 — x4 range of the requested amount, especially if the load is uneven.
 
 - The adapter is built to be scaled horizontally. For serving many concurrent requests it is recommended to increase replicas count as opposed to increasing the pool size and corresponding resource requests/limits.
+
+## Observability
+
+NodeScript MongoDB Adapter exposes the following Prometheus metrics on `/metrics` endpoint:
+
+- `nodescript_mongodb_adapter_connections` — counters depicting connection pool operations, further narrowed down by the `type` label:
+
+    - `connect` — the connection successfully established, but no connection added to the pool just yet
+    - `connectionCreated` — a new connection is added to the pool
+    - `connectionClosed` — the pool recycles unused connection
+    - `fail` — connection failed
+
+- `nodescript_mongodb_adapter_latency` — histogram with response latencies, includes the following labels:
+
+    - `method` — one of the endpoint methods (e.g. `findOne`, `updateOne`, `updateMany`, etc.)
+    - `error` — the error code, omitted if the response was successful
