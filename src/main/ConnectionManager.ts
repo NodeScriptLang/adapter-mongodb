@@ -18,7 +18,7 @@ export class ConnectionManager {
     SWEEP_INACTIVE_TIMEOUT_MS!: number;
 
     @config({ default: 60_000 })
-    MAX_IDLE_TIMEOUT_MS!: number;
+    MAX_IDLE_TIME_MS!: number;
 
     @config({ default: 5_000 })
     CONNECT_TIMEOUT_MS!: number;
@@ -69,7 +69,7 @@ export class ConnectionManager {
                 ignoreUndefined: true,
                 heartbeatFrequencyMS: 30_000,
                 connectTimeoutMS: this.CONNECT_TIMEOUT_MS,
-                maxIdleTimeMS: this.MAX_IDLE_TIMEOUT_MS,
+                maxIdleTimeMS: this.MAX_IDLE_TIME_MS,
                 writeConcern: {
                     w: 'majority',
                 },
