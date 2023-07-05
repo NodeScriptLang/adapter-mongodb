@@ -1,4 +1,4 @@
-import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjection, MongoSort, MongoUpdate } from '@nodescript/adapter-mongodb-protocol';
+import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjection, MongoReadPreference, MongoSort, MongoUpdate } from '@nodescript/adapter-mongodb-protocol';
 import { EJSON } from 'bson';
 import { dep } from 'mesh-ioc';
 
@@ -20,12 +20,14 @@ export class MongoDomainImpl implements MongoDomain {
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
+        readPreference?: MongoReadPreference;
     }): Promise<{ document: any }> {
         const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
         const document = await col.findOne(filter, {
             projection: req.projection,
+            readPreference: req.readPreference,
         });
         return {
             document: EJSON.serialize(document)
@@ -40,6 +42,7 @@ export class MongoDomainImpl implements MongoDomain {
         sort?: MongoSort;
         limit?: number;
         skip?: number;
+        readPreference?: MongoReadPreference;
     }): Promise<{ documents: any[] }> {
         const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
@@ -49,6 +52,7 @@ export class MongoDomainImpl implements MongoDomain {
             sort: req.sort,
             limit: req.limit,
             skip: req.skip,
+            readPreference: req.readPreference,
         }).toArray();
         return {
             documents: EJSON.serialize(documents) as any[]
@@ -185,6 +189,7 @@ export class MongoDomainImpl implements MongoDomain {
         databaseUrl: string;
         collection: string;
         pipeline: MongoAggregate[];
+        readPreference?: MongoReadPreference;
     }): Promise<{
         documents: any[];
     }> {
@@ -193,6 +198,7 @@ export class MongoDomainImpl implements MongoDomain {
         const pipeline = EJSON.deserialize(req.pipeline);
         const documents = await col.aggregate(pipeline, {
             allowDiskUse: true,
+            readPreference: req.readPreference,
         }).toArray();
         return {
             documents: EJSON.serialize(documents) as any[]
