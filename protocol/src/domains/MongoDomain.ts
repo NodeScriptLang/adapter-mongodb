@@ -4,6 +4,7 @@ import { MongoAggregate, MongoAggregateSchema } from '../schema/MongoAggregate.j
 import { MongoDocument, MongoDocumentSchema } from '../schema/MongoDocument.js';
 import { MongoFilter, MongoFilterSchema } from '../schema/MongoFilter.js';
 import { MongoProjection, MongoProjectionSchema } from '../schema/MongoProjection.js';
+import { MongoReadPreference, MongoReadPreferenceSchema } from '../schema/MongoReadPreference.js';
 import { MongoSort, MongoSortSchema } from '../schema/MongoSort.js';
 import { MongoUpdate, MongoUpdateSchema } from '../schema/MongoUpdate.js';
 
@@ -18,6 +19,7 @@ export interface MongoDomain {
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
+        readPreference?: MongoReadPreference;
     }): Promise<{
         document: MongoDocument | null;
     }>;
@@ -30,6 +32,7 @@ export interface MongoDomain {
         sort?: MongoSort;
         limit?: number;
         skip?: number;
+        readPreference?: MongoReadPreference;
     }): Promise<{
         documents: MongoDocument[];
     }>;
@@ -104,6 +107,7 @@ export interface MongoDomain {
         databaseUrl: string;
         collection: string;
         pipeline: MongoAggregate[];
+        readPreference?: MongoReadPreference;
     }): Promise<{
         documents: MongoDocument[];
     }>;
@@ -128,6 +132,10 @@ export const MongoDomain: DomainDef<MongoDomain> = {
                 filter: MongoFilterSchema.schema,
                 projection: {
                     ...MongoProjectionSchema.schema,
+                    optional: true,
+                },
+                readPreference: {
+                    ...MongoReadPreferenceSchema.schema,
                     optional: true,
                 },
             },
@@ -158,6 +166,10 @@ export const MongoDomain: DomainDef<MongoDomain> = {
                 },
                 skip: {
                     type: 'number',
+                    optional: true,
+                },
+                readPreference: {
+                    ...MongoReadPreferenceSchema.schema,
                     optional: true,
                 },
             },
@@ -276,13 +288,17 @@ export const MongoDomain: DomainDef<MongoDomain> = {
                     type: 'array',
                     items: MongoAggregateSchema.schema,
                 },
+                readPreference: {
+                    ...MongoReadPreferenceSchema.schema,
+                    optional: true,
+                },
             },
             returns: {
                 documents: {
                     type: 'array',
                     items: MongoDocumentSchema.schema,
                 }
-            }
+            },
         },
     },
     events: {},
