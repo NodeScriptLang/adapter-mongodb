@@ -4,13 +4,11 @@ export class Metrics {
 
     @metric()
     connectionStats = new CounterMetric<{
-        appId: string;
         type: 'connect' | 'connectionCreated' | 'connectionClosed' | 'close' | 'fail';
     }>('nodescript_mongodb_adapter_connections', 'MongoDB adapter connections');
 
     @metric()
     methodLatency = new HistogramMetric<{
-        appId: string;
         domain: string;
         method: string;
         error?: string;
