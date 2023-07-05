@@ -36,8 +36,6 @@ NodeScript MongoDB Adapter can be configured with the following environment vari
 
 - **SWEEP_INACTIVE_TIMEOUT_MS** (default: 120_000) and **SWEEP_INTERVAL_MS** (default: 10_000) — adapter will periodically sweep the open connections and close them if they are inactive for specified amount of time.
 
-- **APP_ID** — arbitrary string added to Prometheus metrics as an `appId` label.
-
 ## Resource Requests & Limits
 
 MongoDB Adapter acts as a thin proxy between HTTP and MongoDB driver. When it comes to configure the compute resources it's best to keep the following in mind:

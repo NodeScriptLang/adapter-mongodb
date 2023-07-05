@@ -8,7 +8,6 @@ import { dep, Mesh } from 'mesh-ioc';
 
 import { AuthManager } from './AuthManager.js';
 import { ConnectionManager } from './ConnectionManager.js';
-import { Env } from './Env.js';
 import { Metrics } from './Metrics.js';
 import { AppHttpHandler } from './session/AppHttpHandler.js';
 import { AuthHandler } from './session/AuthHandler.js';
@@ -29,7 +28,6 @@ export class App extends BaseApp {
         this.mesh.service(HttpServer);
         this.mesh.service(Metrics);
         this.mesh.service(AuthManager);
-        this.mesh.service(Env);
         this.mesh.service(ConnectionManager);
         this.mesh.service(StandardHttpHandler);
         this.mesh.service(HttpCorsHandler);
