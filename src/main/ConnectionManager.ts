@@ -17,7 +17,7 @@ export class ConnectionManager {
     @config({ default: 30_000 })
     SWEEP_INTERVAL_MS!: number;
 
-    @config({ default: 5_000 })
+    @config({ default: 10_000 })
     CONNECT_TIMEOUT_MS!: number;
 
     @dep() private mesh!: Mesh;

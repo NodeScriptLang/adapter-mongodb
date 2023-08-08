@@ -32,7 +32,7 @@ NodeScript MongoDB Adapter can be configured with the following environment vari
 
 - **POOL_TTL_MS** (default: 60_00) - pools created that many millis ago will be recycled (this eliminates connection leaks otherwise occurring with high-throughput scenarios)
 
-- **CONNECT_TIMEOUT_MS** (default: 5_000) — the adapter will throw an error if the connection cannot be established within specified timeout.
+- **CONNECT_TIMEOUT_MS** (default: 10_000) — the adapter will throw an error if the connection cannot be established within specified timeout.
 
 - **SWEEP_INTERVAL_MS** (default: 30_000) — the interval at which pools are checked for TTL and closed.
 
