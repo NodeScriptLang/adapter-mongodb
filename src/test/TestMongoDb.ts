@@ -21,11 +21,9 @@ export class TestMongoDb {
 
     async start() {
         await this.client.connect();
-        this.logger.info('Connected to MongoDB');
     }
 
     async stop() {
         await this.client.close();
-        this.logger.info('MongoDB connection closed');
     }
 }

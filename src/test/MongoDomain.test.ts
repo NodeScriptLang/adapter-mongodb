@@ -6,12 +6,15 @@ describe('MongoDomain', () => {
 
     describe('findOne', () => {
 
-        it('finds a document', async () => {
+        beforeEach(async () => {
             await runtime.testMongoDb.db.collection<any>('users').insertOne({
                 _id: 'joe',
                 name: 'Joe',
                 email: 'joeatlas@example.com',
             });
+        });
+
+        it('finds a document', async () => {
             const { document } = await runtime.Mongo.findOne({
                 databaseUrl: runtime.testMongoDb.MONGO_URL,
                 collection: 'users',

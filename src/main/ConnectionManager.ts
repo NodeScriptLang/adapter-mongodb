@@ -1,28 +1,26 @@
 import { Logger } from '@nodescript/logger';
 import { config } from 'mesh-config';
-import { dep } from 'mesh-ioc';
+import { dep, Mesh } from 'mesh-ioc';
 import { MongoClient } from 'mongodb';
 
 import { Metrics } from './Metrics.js';
-import { MongoConnection } from './util/MongoConnection.js';
+import { MongoConnection } from './MongoConnection.js';
 
 export class ConnectionManager {
 
     @config({ default: 5 })
     POOL_SIZE!: number;
 
-    @config({ default: 10_000 })
+    @config({ default: 30_000 })
     SWEEP_INTERVAL_MS!: number;
 
     @config({ default: 60_000 })
-    SWEEP_INACTIVE_TIMEOUT_MS!: number;
+    CONNECTION_TTL!: number;
 
-    @config({ default: 10_000 })
-    MAX_IDLE_TIME_MS!: number;
-
-    @config({ default: 10_000 })
+    @config({ default: 5_000 })
     CONNECT_TIMEOUT_MS!: number;
 
+    @dep() private mesh!: Mesh;
     @dep() private logger!: Logger;
     @dep() private metrics!: Metrics;
 
@@ -41,7 +39,7 @@ export class ConnectionManager {
     async stop() {
         this.running = false;
         await this.sweepPromise;
-        this.closeAllConnections();
+        await this.closeAllConnections();
     }
 
     async getConnection(url: string): Promise<MongoConnection> {
@@ -52,41 +50,27 @@ export class ConnectionManager {
                 return existing;
             }
             const client = new MongoClient(connectionUrl, {
-                minPoolSize: 1,
+                minPoolSize: 0,
                 maxPoolSize: this.POOL_SIZE,
                 waitQueueTimeoutMS: 0,
                 ignoreUndefined: true,
                 heartbeatFrequencyMS: 60_000,
                 connectTimeoutMS: this.CONNECT_TIMEOUT_MS,
-                maxIdleTimeMS: this.MAX_IDLE_TIME_MS,
                 retryWrites: true,
                 writeConcern: {
                     w: 'majority',
                 },
             });
-            await client.connect();
-            client.on('connectionCreated', ev => {
-                this.logger.info('Connection created', { connectionKey, connectionId: ev.connectionId });
-                this.metrics.connectionStats.incr(1, {
-                    type: 'connectionCreated'
-                });
-            });
-            client.on('connectionClosed', ev => {
-                this.logger.info('Connection closed', {
-                    connectionKey,
-                    connectionId: ev.connectionId,
-                    reason: ev.reason,
-                });
-                this.metrics.connectionStats.incr(1, {
-                    type: 'connectionClosed',
-                });
-            });
             const connection = new MongoConnection(connectionKey, client);
             this.connectionMap.set(connectionKey, connection);
-            this.metrics.connectionStats.incr(1, {
-                type: 'connect',
+            this.mesh.connect(connection);
+            connection.becameIdle.on(() => {
+                if (connection.age > this.CONNECTION_TTL) {
+                    this.connectionMap.delete(connection.connectionKey);
+                    connection.closeGracefully();
+                }
             });
-            this.logger.info(`Mongo connection created`, { connectionKey });
+            await connection.connect();
             return connection;
         } catch (error) {
             this.logger.error('Mongo connection failed', { error });
@@ -97,18 +81,18 @@ export class ConnectionManager {
         }
     }
 
-    private closeAllConnections() {
-        for (const connection of this.connectionMap.values()) {
-            this.closeConnection(connection);
-        }
+    private async closeAllConnections() {
+        const conns = [...this.connectionMap.values()];
+        this.connectionMap.clear();
+        await Promise.all(conns.map(_ => _.closeGracefully()));
     }
 
-    private closeIdleConnections() {
-        for (const connection of this.connectionMap.values()) {
-            const idle = Date.now() > connection.lastActiveAt + this.SWEEP_INACTIVE_TIMEOUT_MS;
-            if (idle) {
-                this.closeConnection(connection);
-            }
+    private async closeExpired() {
+        const expiredConnections = [...this.connectionMap.values()].filter(_ => _.age > this.CONNECTION_TTL);
+        this.logger.info(`Sweep: closing ${expiredConnections.length} expired connections`);
+        for (const conn of expiredConnections) {
+            this.connectionMap.delete(conn.connectionKey);
+            await conn.closeGracefully();
         }
     }
 
@@ -119,21 +103,9 @@ export class ConnectionManager {
         while (this.running) {
             await new Promise(resolve => setTimeout(resolve, this.SWEEP_INTERVAL_MS).unref());
             this.logger.info('Sweep: closing idle connections');
-            this.closeIdleConnections();
+            this.closeExpired();
         }
     }
-
-    private closeConnection(connection: MongoConnection) {
-        const { connectionKey } = connection;
-        this.connectionMap.delete(connectionKey);
-        connection.client.close(true)
-            .catch(error => {
-                this.logger.error('Mongo connection close failed', { error, connectionKey });
-            });
-        this.metrics.connectionStats.incr(1, { type: 'close' });
-        this.logger.info('Mongo connection closed', { connectionKey });
-    }
-
     private prepareConnectionDetails(url: string) {
         const parsedUrl = new URL(url);
         parsedUrl.search = '';
