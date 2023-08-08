@@ -30,15 +30,15 @@ NodeScript MongoDB Adapter can be configured with the following environment vari
 
 - **POOL_SIZE** (default: 5) - the maximum number of connections to establish to *each* database the adapter connects to.
 
-- **CONNECT_TIMEOUT_MS** (default: 10_000) — the adapter will throw an error if the connection cannot be established within specified timeout.
+- **POOL_TTL_MS** (default: 60_00) - pools created that many millis ago will be recycled (this eliminates connection leaks otherwise occurring with high-throughput scenarios)
 
-- **MAX_IDLE_TIME_MS** (default: 60_000) — corresponds to maxIdleTimeMs connection setting, the amount of seconds before the connection is considered idle and can be recycled by the pool.
+- **CONNECT_TIMEOUT_MS** (default: 5_000) — the adapter will throw an error if the connection cannot be established within specified timeout.
 
-- **SWEEP_INACTIVE_TIMEOUT_MS** (default: 120_000) and **SWEEP_INTERVAL_MS** (default: 10_000) — adapter will periodically sweep the open connections and close them if they are inactive for specified amount of time.
+- **SWEEP_INTERVAL_MS** (default: 30_000) — the interval at which pools are checked for TTL and closed.
 
 ## Resource Requests & Limits
 
-MongoDB Adapter acts as a thin proxy between HTTP and MongoDB driver. When it comes to configure the compute resources it's best to keep the following in mind:
+MongoDB Adapter acts as a thin proxy between HTTP and MongoDB driver. When it comes to configuring the compute resources it's best to keep the following in mind:
 
 - There is no heavy processing on the adapter side, so in a typical case the pod should be fine wuth requesting around 0.1 vCPU. Throttling CPU is not recommended.
 
