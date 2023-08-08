@@ -65,12 +65,18 @@ export class ConnectionManager {
                 },
             });
             await client.connect();
-            client.on('connectionCreated', () => {
+            client.on('connectionCreated', ev => {
+                this.logger.debug('Connection created', { connectionKey, connectionId: ev.connectionId });
                 this.metrics.connectionStats.incr(1, {
                     type: 'connectionCreated'
                 });
             });
-            client.on('connectionClosed', () => {
+            client.on('connectionClosed', ev => {
+                this.logger.debug('Connection closed', {
+                    connectionKey,
+                    connectionId: ev.connectionId,
+                    reason: ev.reason,
+                });
                 this.metrics.connectionStats.incr(1, {
                     type: 'connectionClosed',
                 });
