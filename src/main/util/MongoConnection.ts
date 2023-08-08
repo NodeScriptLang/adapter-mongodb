@@ -1,8 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 /**
- * Encapsulates Mongo connection with the counter of sessions it's used in
- * and last use stats to facilitate cleanups.
+ * Encapsulates Mongo Client with last use stats to facilitate cleanups.
  */
 export class MongoConnection {
 

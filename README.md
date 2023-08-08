@@ -30,7 +30,7 @@ NodeScript MongoDB Adapter can be configured with the following environment vari
 
 - **POOL_SIZE** (default: 5) - the maximum number of connections to establish to *each* database the adapter connects to.
 
-- **CONNECT_TIMEOUT_MS** (default: 5_000) — the adapter will throw an error if the connection cannot be established within specified timeout.
+- **CONNECT_TIMEOUT_MS** (default: 10_000) — the adapter will throw an error if the connection cannot be established within specified timeout.
 
 - **MAX_IDLE_TIME_MS** (default: 60_000) — corresponds to maxIdleTimeMs connection setting, the amount of seconds before the connection is considered idle and can be recycled by the pool.
 

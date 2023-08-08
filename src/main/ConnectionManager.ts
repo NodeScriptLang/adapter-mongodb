@@ -14,13 +14,13 @@ export class ConnectionManager {
     @config({ default: 10_000 })
     SWEEP_INTERVAL_MS!: number;
 
-    @config({ default: 120_000 })
+    @config({ default: 60_000 })
     SWEEP_INACTIVE_TIMEOUT_MS!: number;
 
-    @config({ default: 60_000 })
+    @config({ default: 10_000 })
     MAX_IDLE_TIME_MS!: number;
 
-    @config({ default: 5_000 })
+    @config({ default: 10_000 })
     CONNECT_TIMEOUT_MS!: number;
 
     @dep() private logger!: Logger;
@@ -46,30 +46,20 @@ export class ConnectionManager {
 
     async getConnection(url: string): Promise<MongoConnection> {
         try {
-            const parsedUrl = new URL(url);
-            parsedUrl.searchParams.delete('connectTimeoutMS');
-            parsedUrl.searchParams.delete('heartbeatFrequencyMS');
-            parsedUrl.searchParams.delete('ignoreUndefined');
-            parsedUrl.searchParams.delete('maxIdleTimeMS');
-            parsedUrl.searchParams.delete('maxPoolSize');
-            parsedUrl.searchParams.delete('minPoolSize');
-            parsedUrl.searchParams.delete('socketTimeoutMS');
-            parsedUrl.searchParams.delete('w');
-            parsedUrl.searchParams.delete('waitQueueTimeoutMS');
-            parsedUrl.searchParams.delete('writeConcern');
-            const connectionKey = parsedUrl.href;
+            const { connectionUrl, connectionKey } = this.prepareConnectionDetails(url);
             const existing = this.connectionMap.get(connectionKey);
             if (existing) {
                 return existing;
             }
-            const client = new MongoClient(parsedUrl.toString(), {
-                minPoolSize: 0,
+            const client = new MongoClient(connectionUrl, {
+                minPoolSize: 1,
                 maxPoolSize: this.POOL_SIZE,
                 waitQueueTimeoutMS: 0,
                 ignoreUndefined: true,
-                heartbeatFrequencyMS: 30_000,
+                heartbeatFrequencyMS: 60_000,
                 connectTimeoutMS: this.CONNECT_TIMEOUT_MS,
                 maxIdleTimeMS: this.MAX_IDLE_TIME_MS,
+                retryWrites: true,
                 writeConcern: {
                     w: 'majority',
                 },
@@ -136,6 +126,15 @@ export class ConnectionManager {
             });
         this.metrics.connectionStats.incr(1, { type: 'close' });
         this.logger.info('Mongo connection closed', { connectionKey });
+    }
+
+    private prepareConnectionDetails(url: string) {
+        const parsedUrl = new URL(url);
+        parsedUrl.search = '';
+        const connectionUrl = parsedUrl.href;
+        parsedUrl.password = '';
+        const connectionKey = parsedUrl.href;
+        return { connectionUrl, connectionKey };
     }
 
 }
