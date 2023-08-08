@@ -206,7 +206,9 @@ export class MongoDomainImpl implements MongoDomain {
     }
 
     private async getConnection(databaseUrl: string) {
-        return await this.connectionManager.getConnection(databaseUrl);
+        const conn = this.connectionManager.getConnection(databaseUrl);
+        await conn.connect();
+        return conn;
     }
 
 }

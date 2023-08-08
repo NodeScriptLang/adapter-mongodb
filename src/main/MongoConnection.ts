@@ -13,10 +13,11 @@ export class MongoConnection {
     @dep() private logger!: Logger;
     @dep() private metrics!: Metrics;
 
-    createdAt = Date.now();
-    usedConnections = 0;
-
     becameIdle = new Event<void>();
+
+    private createdAt = Date.now();
+    private usedConnections = 0;
+    private connectPromise: Promise<void> | null = null;
 
     constructor(
         readonly connectionKey: string,
@@ -55,9 +56,14 @@ export class MongoConnection {
     }
 
     async connect() {
-        await this.client.connect();
-        this.metrics.connectionStats.incr(1, { type: 'connect' });
-        this.logger.info(`MongoDB client connected`, { connectionKey: this.connectionKey });
+        if (!this.connectPromise) {
+            this.connectPromise = (async () => {
+                await this.client.connect();
+                this.metrics.connectionStats.incr(1, { type: 'connect' });
+                this.logger.info(`MongoDB client connected`, { connectionKey: this.connectionKey });
+            })();
+        }
+        await this.connectPromise;
     }
 
     async closeNow() {

@@ -42,7 +42,7 @@ export class ConnectionManager {
         await this.closeAllConnections();
     }
 
-    async getConnection(url: string): Promise<MongoConnection> {
+    getConnection(url: string): MongoConnection {
         try {
             const { connectionUrl, connectionKey } = this.prepareConnectionDetails(url);
             const existing = this.connectionMap.get(connectionKey);
@@ -70,7 +70,6 @@ export class ConnectionManager {
                     connection.closeGracefully();
                 }
             });
-            await connection.connect();
             return connection;
         } catch (error) {
             this.logger.error('Mongo connection failed', { error });
@@ -102,7 +101,6 @@ export class ConnectionManager {
         }
         while (this.running) {
             await new Promise(resolve => setTimeout(resolve, this.SWEEP_INTERVAL_MS).unref());
-            this.logger.info('Sweep: closing idle connections');
             this.closeExpired();
         }
     }
