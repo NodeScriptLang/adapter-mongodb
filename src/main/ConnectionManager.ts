@@ -15,7 +15,7 @@ export class ConnectionManager {
     SWEEP_INTERVAL_MS!: number;
 
     @config({ default: 60_000 })
-    CONNECTION_TTL!: number;
+    POOL_TTL!: number;
 
     @config({ default: 5_000 })
     CONNECT_TIMEOUT_MS!: number;
@@ -65,7 +65,7 @@ export class ConnectionManager {
             this.connectionMap.set(connectionKey, connection);
             this.mesh.connect(connection);
             connection.becameIdle.on(() => {
-                if (connection.age > this.CONNECTION_TTL) {
+                if (connection.age > this.POOL_TTL) {
                     this.connectionMap.delete(connection.connectionKey);
                     connection.closeGracefully();
                 }
@@ -87,7 +87,7 @@ export class ConnectionManager {
     }
 
     private async closeExpired() {
-        const expiredConnections = [...this.connectionMap.values()].filter(_ => _.age > this.CONNECTION_TTL);
+        const expiredConnections = [...this.connectionMap.values()].filter(_ => _.age > this.POOL_TTL);
         this.logger.info(`Sweep: closing ${expiredConnections.length} expired connections`);
         for (const conn of expiredConnections) {
             this.connectionMap.delete(conn.connectionKey);
