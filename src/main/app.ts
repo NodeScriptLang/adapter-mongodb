@@ -45,12 +45,14 @@ export class App extends BaseApp {
         return mesh;
     }
 
-    async start() {
+    override async start() {
+        await super.start();
         await this.connectionManager.start();
         await this.httpServer.start();
     }
 
-    async stop() {
+    override async stop() {
+        await super.stop();
         await this.connectionManager.stop();
         await this.httpServer.stop();
     }

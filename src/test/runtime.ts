@@ -20,6 +20,7 @@ export class TestRuntime {
         this.requestScope.connect(this);
 
         await this.testMongoDb.start();
+
         await this.app.start();
         await this.testMongoDb.db.dropDatabase();
     }
