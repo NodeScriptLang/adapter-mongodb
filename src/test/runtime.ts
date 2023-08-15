@@ -1,13 +1,9 @@
-import { config } from 'dotenv';
 import { dep, Mesh } from 'mesh-ioc';
 
 import { App } from '../main/app.js';
 import { ConnectionManager } from '../main/ConnectionManager.js';
 import { MongoDomainImpl } from '../main/session/MongoDomainImpl.js';
 import { TestMongoDb } from './TestMongoDb.js';
-
-config({ path: '.env' });
-config({ path: '.env.test' });
 
 export class TestRuntime {
     app = new App();
