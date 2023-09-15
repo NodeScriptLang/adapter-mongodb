@@ -18,7 +18,7 @@
         "compile": "npm run clean && tsc -b",
         "build": "run-s compile",
         "lint": "eslint --ext=.js,.ts,.vue --cache .",
-        "test": "NODE_NO_WARNINGS=1 NODE_ENV=test mocha",
+        "test": "NODE_ENV=test mocha",
         "version": "run-s version:*",
         "version:compile": "npm run compile",
         "version:workspaces": "npm exec --workspaces -- npm version $npm_package_version && git add .",

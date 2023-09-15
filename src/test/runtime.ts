@@ -19,9 +19,8 @@ export class TestRuntime {
         this.requestScope = this.app.createSessionScope();
         this.requestScope.connect(this);
 
-        await this.testMongoDb.start();
-
         await this.app.start();
+        await this.testMongoDb.start();
         await this.testMongoDb.db.dropDatabase();
     }
 
