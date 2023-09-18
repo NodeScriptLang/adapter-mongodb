@@ -16,7 +16,7 @@
         "clean": "rm -rf out *.tsbuildinfo"
     },
     "dependencies": {
-        "@nodescript/protocomm": "^0.7.0",
+        "@nodescript/protocomm": "^1.0.0",
         "airtight": "^5.7.0"
     }
 }
