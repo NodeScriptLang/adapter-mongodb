@@ -4,6 +4,9 @@ import { runtime } from './runtime.js';
 
 describe('MongoDomain', () => {
 
+    beforeEach(() => runtime.setup());
+    afterEach(() => runtime.teardown());
+
     describe('findOne', () => {
 
         beforeEach(async () => {

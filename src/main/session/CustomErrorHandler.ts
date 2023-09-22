@@ -8,7 +8,7 @@ export class CustomErrorHandler implements HttpHandler {
             await next();
         } catch (error: any) {
             if (error instanceof MongoError) {
-                throw new MongoError(error);
+                throw new WrappedMongoError(error);
             }
             throw error;
         }
