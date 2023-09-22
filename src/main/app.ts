@@ -14,6 +14,7 @@ import { AuthHandler } from './session/AuthHandler.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
 import { MongoProtocolHandler } from './session/MongoProtocolHandler.js';
 import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
+import { CustomErrorHandler } from './session/CustomErrorHandler.js';
 
 export class App extends BaseApp {
 
@@ -32,6 +33,7 @@ export class App extends BaseApp {
         this.mesh.service(StandardHttpHandler);
         this.mesh.service(HttpCorsHandler);
         this.mesh.service(HttpMetricsHandler);
+        this.mesh.service(CustomErrorHandler);
     }
 
     createSessionScope() {
