@@ -11,10 +11,10 @@ import { ConnectionManager } from './ConnectionManager.js';
 import { Metrics } from './Metrics.js';
 import { AppHttpHandler } from './session/AppHttpHandler.js';
 import { AuthHandler } from './session/AuthHandler.js';
+import { CustomErrorHandler } from './session/CustomErrorHandler.js';
 import { MongoDomainImpl } from './session/MongoDomainImpl.js';
 import { MongoProtocolHandler } from './session/MongoProtocolHandler.js';
 import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
-import { CustomErrorHandler } from './session/CustomErrorHandler.js';
 
 export class App extends BaseApp {
 
