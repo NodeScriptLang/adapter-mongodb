@@ -11,4 +11,5 @@ export enum MongoReadPreference {
 export const MongoReadPreferenceSchema = new Schema<MongoReadPreference>({
     type: 'string',
     enum: Object.values(MongoReadPreference),
+    default: MongoReadPreference.PRIMARY,
 });
