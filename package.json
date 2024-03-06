@@ -1,6 +1,6 @@
 {
     "name": "@nodescript/adapter-mongodb",
-    "version": "1.18.0",
+    "version": "1.18.1",
     "description": "MongoDB Adapter",
     "type": "module",
     "sideEffects": false,
