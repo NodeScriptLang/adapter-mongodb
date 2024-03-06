@@ -5,7 +5,7 @@ import { AuthHandler } from './AuthHandler.js';
 import { CustomErrorHandler } from './CustomErrorHandler.js';
 import { MongoProtocolHandler } from './MongoProtocolHandler.js';
 
-export class AppHttpHandler extends HttpChain {
+export class MongoHttpHandler extends HttpChain {
 
     @dep() private standardHttpHandler!: StandardHttpHandler;
     @dep() private corsHandler!: HttpCorsHandler;

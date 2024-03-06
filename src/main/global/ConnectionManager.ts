@@ -3,8 +3,8 @@ import { config } from 'mesh-config';
 import { dep, Mesh } from 'mesh-ioc';
 import { MongoClient } from 'mongodb';
 
+import { MongoConnection } from '../MongoConnection.js';
 import { Metrics } from './Metrics.js';
-import { MongoConnection } from './MongoConnection.js';
 
 export class ConnectionManager {
 

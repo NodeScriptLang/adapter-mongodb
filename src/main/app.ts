@@ -6,15 +6,15 @@ import { BaseApp, StandardLogger } from '@nodescript/microframework';
 import { Config, ProcessEnvConfig } from 'mesh-config';
 import { dep, Mesh } from 'mesh-ioc';
 
-import { AuthManager } from './AuthManager.js';
-import { ConnectionManager } from './ConnectionManager.js';
-import { Metrics } from './Metrics.js';
-import { AppHttpHandler } from './session/AppHttpHandler.js';
-import { AuthHandler } from './session/AuthHandler.js';
-import { CustomErrorHandler } from './session/CustomErrorHandler.js';
-import { MongoDomainImpl } from './session/MongoDomainImpl.js';
-import { MongoProtocolHandler } from './session/MongoProtocolHandler.js';
-import { MongoProtocolImpl } from './session/MongoProtocolImpl.js';
+import { AuthHandler } from './global/AuthHandler.js';
+import { ConnectionManager } from './global/ConnectionManager.js';
+import { CustomErrorHandler } from './global/CustomErrorHandler.js';
+import { Metrics } from './global/Metrics.js';
+import { MongoDomainImpl } from './global/MongoDomainImpl.js';
+import { MongoHttpHandler } from './global/MongoHttpHandler.js';
+import { MongoHttpServer } from './global/MongoHttpServer.js';
+import { MongoProtocolHandler } from './global/MongoProtocolHandler.js';
+import { MongoProtocolImpl } from './global/MongoProtocolImpl.js';
 
 export class App extends BaseApp {
 
@@ -23,28 +23,20 @@ export class App extends BaseApp {
 
     constructor() {
         super(new Mesh('App'));
-        this.mesh.constant(HttpServer.SCOPE, () => this.createSessionScope());
         this.mesh.service(Config, ProcessEnvConfig);
         this.mesh.service(Logger, StandardLogger);
-        this.mesh.service(HttpServer);
         this.mesh.service(Metrics);
-        this.mesh.service(AuthManager);
+        this.mesh.service(AuthHandler);
         this.mesh.service(ConnectionManager);
-        this.mesh.service(StandardHttpHandler);
+        this.mesh.service(CustomErrorHandler);
         this.mesh.service(HttpCorsHandler);
         this.mesh.service(HttpMetricsHandler);
-        this.mesh.service(CustomErrorHandler);
-    }
-
-    createSessionScope() {
-        const mesh = new Mesh('Request');
-        mesh.parent = this.mesh;
-        mesh.service(HttpServer.HANDLER, AppHttpHandler);
-        mesh.service(AuthHandler);
-        mesh.service(MongoDomainImpl);
-        mesh.service(MongoProtocolImpl);
-        mesh.service(MongoProtocolHandler);
-        return mesh;
+        this.mesh.service(HttpServer, MongoHttpServer);
+        this.mesh.service(MongoDomainImpl);
+        this.mesh.service(MongoHttpHandler);
+        this.mesh.service(MongoProtocolHandler);
+        this.mesh.service(MongoProtocolImpl);
+        this.mesh.service(StandardHttpHandler);
     }
 
     override async start() {

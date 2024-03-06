@@ -2,7 +2,7 @@ import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjectio
 import { EJSON } from 'bson';
 import { dep } from 'mesh-ioc';
 
-import { ConnectionManager } from '../ConnectionManager.js';
+import { ConnectionManager } from './ConnectionManager.js';
 
 export class MongoDomainImpl implements MongoDomain {
 

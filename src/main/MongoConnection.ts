@@ -3,7 +3,7 @@ import { dep } from 'mesh-ioc';
 import { MongoClient } from 'mongodb';
 import { Event } from 'nanoevent';
 
-import { Metrics } from './Metrics.js';
+import { Metrics } from './global/Metrics.js';
 
 /**
  * Encapsulates Mongo Client to facilitate connection pool usage and cleanups.

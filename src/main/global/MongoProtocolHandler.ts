@@ -2,7 +2,7 @@ import { MongoProtocol, mongoProtocol } from '@nodescript/adapter-mongodb-protoc
 import { HttpProtocolHandler } from '@nodescript/http-server';
 import { dep } from 'mesh-ioc';
 
-import { Metrics } from '../Metrics.js';
+import { Metrics } from './Metrics.js';
 import { MongoProtocolImpl } from './MongoProtocolImpl.js';
 
 export class MongoProtocolHandler extends HttpProtocolHandler<MongoProtocol> {
