@@ -1,6 +1,6 @@
 {
     "name": "@nodescript/adapter-mongodb-protocol",
-    "version": "1.18.4",
+    "version": "1.18.5",
     "description": "MongoDb Adapter Protocol",
     "type": "module",
     "sideEffects": false,
