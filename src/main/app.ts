@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { HttpCorsHandler, HttpMetricsHandler, HttpServer, StandardHttpHandler } from '@nodescript/http-server';
+import { HttpCorsHandler, HttpErrorHandler, HttpMetricsHandler, HttpServer, HttpStatusHandler } from '@nodescript/http-server';
 import { Logger } from '@nodescript/logger';
 import { BaseApp, StandardLogger } from '@nodescript/microframework';
 import { Config, ProcessEnvConfig } from 'mesh-config';
@@ -27,9 +27,10 @@ export class App extends BaseApp {
         this.mesh.service(Metrics);
         this.mesh.service(AuthHandler);
         this.mesh.service(HttpServer, MainHttpServer);
-        this.mesh.service(StandardHttpHandler);
+        this.mesh.service(HttpErrorHandler);
         this.mesh.service(HttpCorsHandler);
         this.mesh.service(HttpMetricsHandler);
+        this.mesh.service(HttpStatusHandler);
         this.mesh.service(CustomErrorHandler);
         this.mesh.service(ConnectionManager);
         this.mesh.service(MongoDomainImpl);
