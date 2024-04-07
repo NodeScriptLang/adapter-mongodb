@@ -4,11 +4,10 @@ import { dep, Mesh } from 'mesh-ioc';
 import { MongoClient } from 'mongodb';
 
 import { MongoConnection } from '../MongoConnection.js';
-import { Metrics } from './Metrics.js';
 
 export class ConnectionManager {
 
-    @config({ default: 5 })
+    @config({ default: 10 })
     POOL_SIZE!: number;
 
     @config({ default: 60_000 })
@@ -22,7 +21,6 @@ export class ConnectionManager {
 
     @dep() private mesh!: Mesh;
     @dep() private logger!: Logger;
-    @dep() private metrics!: Metrics;
 
     private connectionMap = new Map<string, MongoConnection>();
     private running = false;
@@ -43,41 +41,33 @@ export class ConnectionManager {
     }
 
     getConnection(url: string): MongoConnection {
-        try {
-            const { connectionUrl, connectionKey } = this.prepareConnectionDetails(url);
-            const existing = this.connectionMap.get(connectionKey);
-            if (existing) {
-                return existing;
-            }
-            const client = new MongoClient(connectionUrl, {
-                minPoolSize: 0,
-                maxPoolSize: this.POOL_SIZE,
-                waitQueueTimeoutMS: 0,
-                ignoreUndefined: true,
-                heartbeatFrequencyMS: 60_000,
-                connectTimeoutMS: this.CONNECT_TIMEOUT_MS,
-                retryWrites: true,
-                writeConcern: {
-                    w: 'majority',
-                },
-            });
-            const connection = new MongoConnection(connectionKey, client);
-            this.connectionMap.set(connectionKey, connection);
-            this.mesh.connect(connection);
-            connection.becameIdle.on(() => {
-                if (connection.age > this.POOL_TTL_MS) {
-                    this.connectionMap.delete(connection.connectionKey);
-                    connection.closeGracefully();
-                }
-            });
-            return connection;
-        } catch (error) {
-            this.logger.error('Mongo connection failed', { error });
-            this.metrics.connectionStats.incr(1, {
-                type: 'fail',
-            });
-            throw error;
+        const { connectionUrl, connectionKey } = this.prepareConnectionDetails(url);
+        const existing = this.connectionMap.get(connectionKey);
+        if (existing) {
+            return existing;
         }
+        const client = new MongoClient(connectionUrl, {
+            minPoolSize: 0,
+            maxPoolSize: this.POOL_SIZE,
+            waitQueueTimeoutMS: 0,
+            ignoreUndefined: true,
+            heartbeatFrequencyMS: 60_000,
+            connectTimeoutMS: this.CONNECT_TIMEOUT_MS,
+            retryWrites: true,
+            writeConcern: {
+                w: 'majority',
+            },
+        });
+        const connection = new MongoConnection(connectionKey, client);
+        this.connectionMap.set(connectionKey, connection);
+        this.mesh.connect(connection);
+        connection.becameIdle.on(() => {
+            if (connection.age > this.POOL_TTL_MS) {
+                this.connectionMap.delete(connection.connectionKey);
+                connection.closeGracefully();
+            }
+        });
+        return connection;
     }
 
     private async closeAllConnections() {

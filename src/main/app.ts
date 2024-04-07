@@ -1,16 +1,13 @@
 import 'reflect-metadata';
 
-import { HttpCorsHandler, HttpErrorHandler, HttpMetricsHandler, HttpServer, HttpStatusHandler } from '@nodescript/http-server';
-import { Logger } from '@nodescript/logger';
-import { BaseApp, StandardLogger } from '@nodescript/microframework';
-import { Config, ProcessEnvConfig } from 'mesh-config';
+import { HttpServer } from '@nodescript/http-server';
+import { BaseApp } from '@nodescript/microframework';
 import { dep, Mesh } from 'mesh-ioc';
 
 import { AuthHandler } from './global/AuthHandler.js';
 import { ConnectionManager } from './global/ConnectionManager.js';
 import { CustomErrorHandler } from './global/CustomErrorHandler.js';
 import { MainHttpServer } from './global/MainHttpServer.js';
-import { Metrics } from './global/Metrics.js';
 import { MongoDomainImpl } from './global/MongoDomainImpl.js';
 import { MongoProtocolHandler } from './global/MongoProtocolHandler.js';
 import { MongoProtocolImpl } from './global/MongoProtocolImpl.js';
@@ -22,15 +19,8 @@ export class App extends BaseApp {
 
     constructor() {
         super(new Mesh('App'));
-        this.mesh.service(Config, ProcessEnvConfig);
-        this.mesh.service(Logger, StandardLogger);
-        this.mesh.service(Metrics);
         this.mesh.service(AuthHandler);
         this.mesh.service(HttpServer, MainHttpServer);
-        this.mesh.service(HttpErrorHandler);
-        this.mesh.service(HttpCorsHandler);
-        this.mesh.service(HttpMetricsHandler);
-        this.mesh.service(HttpStatusHandler);
         this.mesh.service(CustomErrorHandler);
         this.mesh.service(ConnectionManager);
         this.mesh.service(MongoDomainImpl);

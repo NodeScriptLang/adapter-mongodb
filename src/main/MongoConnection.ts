@@ -1,9 +1,8 @@
 import { Logger } from '@nodescript/logger';
+import { CounterMetric, metric } from '@nodescript/metrics';
 import { dep } from 'mesh-ioc';
 import { MongoClient } from 'mongodb';
 import { Event } from 'nanoevent';
-
-import { Metrics } from './global/Metrics.js';
 
 /**
  * Encapsulates Mongo Client to facilitate connection pool usage and cleanups.
@@ -11,13 +10,17 @@ import { Metrics } from './global/Metrics.js';
 export class MongoConnection {
 
     @dep() private logger!: Logger;
-    @dep() private metrics!: Metrics;
 
     becameIdle = new Event<void>();
 
     private createdAt = Date.now();
     private usedConnections = 0;
     private connectPromise: Promise<void> | null = null;
+
+    @metric()
+    private connectionStats = new CounterMetric<{
+        type: 'connect' | 'connectionCreated' | 'connectionClosed' | 'close' | 'fail';
+    }>('nodescript_mongodb_adapter_connections', 'MongoDB adapter connections');
 
     constructor(
         readonly connectionKey: string,
@@ -26,7 +29,7 @@ export class MongoConnection {
         client.on('connectionCreated', ev => {
             // This happens when pool establishes a new connection
             this.logger.info('Connection created', { connectionKey, connectionId: ev.connectionId });
-            this.metrics.connectionStats.incr(1, {
+            this.connectionStats.incr(1, {
                 type: 'connectionCreated'
             });
         });
@@ -37,7 +40,7 @@ export class MongoConnection {
                 connectionId: ev.connectionId,
                 reason: ev.reason,
             });
-            this.metrics.connectionStats.incr(1, {
+            this.connectionStats.incr(1, {
                 type: 'connectionClosed',
             });
         });
@@ -58,9 +61,14 @@ export class MongoConnection {
     async connect() {
         if (!this.connectPromise) {
             this.connectPromise = (async () => {
-                await this.client.connect();
-                this.metrics.connectionStats.incr(1, { type: 'connect' });
-                this.logger.info(`MongoDB client connected`, { connectionKey: this.connectionKey });
+                try {
+                    await this.client.connect();
+                    this.connectionStats.incr(1, { type: 'connect' });
+                    this.logger.info(`MongoDB client connected`, { connectionKey: this.connectionKey });
+                } catch (error) {
+                    this.connectionStats.incr(1, { type: 'fail' });
+                    throw error;
+                }
             })();
         }
         await this.connectPromise;
@@ -69,7 +77,7 @@ export class MongoConnection {
     async closeNow() {
         try {
             await this.client.close();
-            this.metrics.connectionStats.incr(1, { type: 'close' });
+            this.connectionStats.incr(1, { type: 'close' });
             this.logger.info('MongoDB client closed', { connectionKey: this.connectionKey });
         } catch (error) {
             this.logger.error('MongoDB client close failed', {
