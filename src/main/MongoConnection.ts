@@ -103,7 +103,7 @@ export class MongoConnection {
         return this.client.db(dbName);
     }
 
-    private async waitIdle() {
+    private waitIdle() {
         return new Promise<void>(resolve => {
             if (this.usedConnections === 0) {
                 return resolve();

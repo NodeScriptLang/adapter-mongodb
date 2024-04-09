@@ -61,12 +61,6 @@ export class ConnectionManager {
         const connection = new MongoConnection(connectionKey, client);
         this.connectionMap.set(connectionKey, connection);
         this.mesh.connect(connection);
-        connection.becameIdle.on(() => {
-            if (connection.age > this.POOL_TTL_MS) {
-                this.connectionMap.delete(connection.connectionKey);
-                connection.closeGracefully();
-            }
-        });
         return connection;
     }
 
