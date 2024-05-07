@@ -7,21 +7,9 @@ on:
 
 jobs:
   build:
-    uses: ubio/github-actions/.github/workflows/ci-build.yaml@master
+    uses: NodeScriptLang/github-actions/.github/workflows/ci-build.yaml@main
     with:
-      name: NodeScript MongoDB Adapter
-      image: gcr.io/automation-cloud-registry/nodescript-adapter-mongodb
-      ref: ${{ github.ref }}
+      image: europe-west1-docker.pkg.dev/nodescript-production/nodescript-image-registry/nodescript-adapter-mongodb
       file: Dockerfile
     secrets:
       REGISTRY_SECRET: ${{ secrets.GCP_REGISTRY_ACCESS }}
-      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-      SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-
-  deploy-fetch:
-    needs: build
-    uses: ubio/github-actions/.github/workflows/cd-dispatch.yaml@master
-    with:
-      event_name: built-nodescript-adapter-mongodb
-    secrets:
-      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
