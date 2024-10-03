@@ -18,7 +18,7 @@
     ],
     "dependencies": {
       "@nodescript/adapter-mongodb-protocol": "^1.22.0",
-      "@nodescript/core": "^7.16.2"
+      "@nodescript/core": "^7.21.0"
     },
     "repository": {
       "type": "git",
