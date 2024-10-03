@@ -6,7 +6,8 @@
     "sideEffects": false,
     "private": true,
     "workspaces": [
-        "protocol"
+        "protocol",
+        "nodes"
     ],
     "scripts": {
         "clean": "run-p clean:*",
@@ -24,7 +25,9 @@
         "version:workspaces": "npm exec --workspaces -- npm version $npm_package_version && git add .",
         "postversion": "run-s postversion:*",
         "postversion:push": "git push --tags origin main",
-        "postversion:publish-protocol": "cd protocol && npm publish --access=public"
+        "postversion:publish-protocol": "cd protocol && npm publish --access=public",
+        "postversion:publish-nodes": "cd nodes && npm publish --access=public",
+        "publish:nodes": "cd nodes && nodescript publish"
     },
     "pre-commit": [
         "lint"
@@ -37,6 +40,7 @@
     "author": "Boris Okunskiy",
     "license": "ISC",
     "devDependencies": {
+        "@nodescript/cli": "^1.8.0",
         "@nodescript/adapter-mongodb-protocol": "^1.18.2",
         "@nodescript/eslint-config": "^1.2.0",
         "@types/mocha": "^10.0.6",

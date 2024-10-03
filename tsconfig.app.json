@@ -1,7 +1,8 @@
 {
     "extends": "./tsconfig.base.json",
     "references": [
-        { "path": "./protocol" }
+        { "path": "./protocol" },
+        { "path": "./nodes" }
     ],
     "compilerOptions": {
         "rootDir": "src",
