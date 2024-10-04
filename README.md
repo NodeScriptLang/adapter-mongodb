@@ -20,7 +20,7 @@ graph LR
 
 A single adapter application is able to connect to multiple different MongoDB databases, thus typically a single adapter deployment is required to facilitate connections to all databases you need.
 
-NodeScript MongoDB Adapter is currently available as a docker image at `gcr.io/automation-cloud-registry/nodescript-adapter-mongodb`.
+NodeScript MongoDB Adapter is currently available as a docker image at `gcr.io/nodescriptlang/adapter-mongodb`.
 
 ## Configuration
 
