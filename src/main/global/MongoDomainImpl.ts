@@ -8,6 +8,13 @@ export class MongoDomainImpl implements MongoDomain {
 
     @dep() private connectionManager!: ConnectionManager;
 
+    async connect(req: {
+        databaseUrl: string;
+    }): Promise<{}> {
+        await this.getConnection(req.databaseUrl);
+        return {};
+    }
+
     async findOne(req: {
         databaseUrl: string;
         collection: string;
