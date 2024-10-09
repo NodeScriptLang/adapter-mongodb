@@ -10,10 +10,6 @@ import { MongoUpdate, MongoUpdateSchema } from '../schema/MongoUpdate.js';
 
 export interface MongoDomain {
 
-    connect(req: {
-        databaseUrl: string;
-    }): Promise<{}>;
-
     findOne(req: {
         databaseUrl: string;
         collection: string;
@@ -117,13 +113,6 @@ export interface MongoDomain {
 export const MongoDomain: DomainDef<MongoDomain> = {
     name: 'Mongo',
     methods: {
-        connect: {
-            type: 'command',
-            params: {
-                databaseUrl: { type: 'string' },
-            },
-            returns: {},
-        },
         findOne: {
             type: 'command',
             params: {
