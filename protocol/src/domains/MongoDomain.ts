@@ -10,6 +10,10 @@ import { MongoUpdate, MongoUpdateSchema } from '../schema/MongoUpdate.js';
 
 export interface MongoDomain {
 
+    /**
+     * @deprecated Left for backwards compatibility,
+     * remove when there are no more calls to /Mongo/connect
+     */
     connect(req: {
         databaseUrl: string;
     }): Promise<{}>;
