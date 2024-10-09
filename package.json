@@ -26,7 +26,6 @@
         "postversion": "run-s postversion:*",
         "postversion:push": "git push --tags origin main",
         "postversion:publish-protocol": "cd protocol && npm publish --access=public",
-        "postversion:publish-nodes": "cd nodes && npm publish --access=public",
         "publish:nodes": "cd nodes && nodescript publish"
     },
     "pre-commit": [
