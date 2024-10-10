@@ -22,6 +22,8 @@ A single adapter application is able to connect to multiple different MongoDB da
 
 NodeScript MongoDB Adapter is currently available as a docker image at `ghcr.io/nodescriptlang/adapter-mongodb`.
 
+Example: `docker run -d -e AUTH_SECRET=<some_secret> -p 8080:8080 ghcr.io/nodescriptlang/adapter-mongodb`
+
 ## Configuration
 
 NodeScript MongoDB Adapter can be configured with the following environment variables:
@@ -63,37 +65,17 @@ NodeScript MongoDB Adapter exposes the following Prometheus metrics on `/metrics
 
     - `method` — one of the endpoint methods (e.g. `findOne`, `updateOne`, `updateMany`, etc.)
     - `error` — the error code, omitted if the response was successful
+    
+## Usage
 
+1. Ensure your adapter and database are deployed.
+2. Login to [Nodescript](https://nodescript.dev/login)
+3. Either open an existing graph in your chosen workspace, or create a new one.
 
-## Running locally
+![Nodescript integration](./docs/images/nodescript-usage.jpeg)
 
-Install with `npm i` then run with `npm run dev`. Ensure you have MongoDb running with a database and collection(s) configured.
-
-Make requests to http://localhost:8183/Mongo/<endpoint>. Refer to the schemas in /protocol for further information on the requirements for each request.
-
-### Load Nodes into Nodescript
-
-1. Ensure you have a `.env` file in the `nodes` directory of this repo, with the following variables:
-
-```
-    NODESCRIPT_API_URL=http://localhost:32001
-    NODESCRIPT_API_TOKEN=
-    NODESCRIPT_WORKSPACE_ID=
-```
-
-2. If not already cloned, in a different directory clone [Nodescript](https://github.com/ubio/nodescript-platform) repo and follow the instructions in the documentation to get it running locally.
-
-3. Sign into NodeScript and create a new workspace. Copy the Workspace Id from the URL into `NODESCRIPT_WORKSPACE_ID` in `.env`.
-
-4. Create an access token:
-
-    - go to `http://localhost:8082/user/tokens`
-    - generate a new token
-    - copy the token and paste it into the `NODESCRIPT_API_TOKEN` in `.env` file you created above
-
-
-5. With `.env` filled, run `npm run publish:nodes`. Make sure the logs list the published nodes.
-
-6. Open (or reload) any graph locally and confirm that the adapter-sql nodes are now available.
-
-**NOTE** - To actually use the nodes in nodescript, you will need to be running this adapter server locally or have a link to a deployed instance of it.
+4. Add a `Mongo DB / Connect` node in a graph, then input your adapter and Mongo DB connection urls.
+    - These can be securely stored as secrets/variables in the workspace `Variables` section, then accessed in graphs within that workspace and connected to the node, as shown above.
+5. Add a `Mongo DB` query node and connect the output of the `Mongo / Connect` to the `connection` socket. There are a variety of query nodes available which correspond to standard Mongo queries.
+6. Use the node to configure your Mongo query as you would with the regular javascript mongo library. 
+7. Running the `Mongo DB` query node will query your designated database using the connection established with your adapter.
