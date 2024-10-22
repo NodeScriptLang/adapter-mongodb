@@ -1,4 +1,4 @@
-import { GraphEvalContext, ModuleCompute, ModuleDefinition } from '@nodescript/core/types';
+import { ModuleCompute, ModuleDefinition } from '@nodescript/core/types';
 
 import { MongoDbConnection } from '../lib/MongoDbConnection.js';
 
@@ -32,17 +32,9 @@ export const module: ModuleDefinition<P, R> = {
     cacheMode: 'always',
 };
 
-export const compute: ModuleCompute<P, R> = async (params, ctx) => {
-    const adapterUrl = getAdapterUrl(params, ctx);
+export const compute: ModuleCompute<P, R> = async params => {
+    const adapterUrl = params.adapterUrl;
     const databaseUrl = params.url;
     const connection = new MongoDbConnection(databaseUrl, adapterUrl);
     return connection;
 };
-
-function getAdapterUrl(params: P, ctx: GraphEvalContext) {
-    const local = ctx.getLocal<string>('ADAPTER_MONGODB_URL');
-    if (local) {
-        return local;
-    }
-    return params.adapterUrl || 'https://mongodb.adapters.nodescript.dev';
-}
