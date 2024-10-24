@@ -1,4 +1,4 @@
-import { HttpChain, HttpContext, HttpCorsHandler, HttpErrorHandler, HttpMetricsHandler, HttpNext, HttpServer, HttpStatusHandler } from '@nodescript/http-server';
+import { HttpChain, HttpContext, HttpCorsHandler, HttpErrorHandler, HttpNext, HttpServer, HttpStatusHandler } from '@nodescript/http-server';
 import { dep } from 'mesh-ioc';
 
 import { AuthHandler } from './AuthHandler.js';
@@ -9,7 +9,6 @@ export class MainHttpServer extends HttpServer {
 
     @dep() private errorHandler!: HttpErrorHandler;
     @dep() private corsHandler!: HttpCorsHandler;
-    @dep() private metricsHandler!: HttpMetricsHandler;
     @dep() private statusHandler!: HttpStatusHandler;
     @dep() private authHandler!: AuthHandler;
     @dep() private customErrorHandler!: CustomErrorHandler;
@@ -18,7 +17,6 @@ export class MainHttpServer extends HttpServer {
     handler = new HttpChain([
         this.errorHandler,
         this.statusHandler,
-        this.metricsHandler,
         this.corsHandler,
         this.authHandler,
         this.customErrorHandler,
