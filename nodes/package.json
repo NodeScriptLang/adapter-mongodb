@@ -1,9 +1,6 @@
 {
     "name": "@nodescript/adapter-mongodb-nodes",
     "version": "1.22.3",
-    "description": "MongoDB Connector Nodes",
     "private": true,
-    "type": "module",
-    "author": "Nodescript",
-    "license": "ISC"
+    "type": "module"
 }
