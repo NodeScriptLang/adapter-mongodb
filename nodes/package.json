@@ -1,6 +1,6 @@
 {
     "name": "@nodescript/adapter-mongodb-nodes",
-    "version": "1.22.2",
+    "version": "1.22.3",
     "type": "module",
     "description": "MongoDB Connector Nodes",
     "files": [
