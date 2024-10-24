@@ -1,29 +1,9 @@
 {
     "name": "@nodescript/adapter-mongodb-nodes",
     "version": "1.22.3",
-    "type": "module",
     "description": "MongoDB Connector Nodes",
-    "files": [
-        "out/lib/**/*",
-        "out/nodes/**/*"
-    ],
-    "scripts": {
-        "clean": "rm -rf out *.tsbuildinfo"
-    },
-    "engines": {
-        "node": ">=18"
-    },
-    "pre-commit": [
-        "lint"
-    ],
-    "dependencies": {
-        "@nodescript/adapter-mongodb-protocol": "^1.22.0",
-        "@nodescript/core": "^7.21.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/NodeScriptLang/adapter-mongodb.git"
-    },
+    "private": true,
+    "type": "module",
     "author": "Nodescript",
     "license": "ISC"
 }
