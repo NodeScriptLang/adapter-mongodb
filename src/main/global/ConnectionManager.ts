@@ -88,6 +88,7 @@ export class ConnectionManager {
             this.closeExpired();
         }
     }
+
     private prepareConnectionDetails(url: string) {
         const parsedUrl = new URL(url);
         parsedUrl.search = '';

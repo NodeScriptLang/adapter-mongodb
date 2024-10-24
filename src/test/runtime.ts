@@ -6,6 +6,7 @@ import { MongoDomainImpl } from '../main/global/MongoDomainImpl.js';
 import { TestMongoDb } from './TestMongoDb.js';
 
 export class TestRuntime {
+
     app = new App();
 
     @dep({ cache: false }) Mongo!: MongoDomainImpl;

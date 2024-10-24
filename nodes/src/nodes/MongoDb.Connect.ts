@@ -2,10 +2,10 @@ import { ModuleCompute, ModuleDefinition } from '@nodescript/core/types';
 
 import { MongoDbConnection } from '../lib/MongoDbConnection.js';
 
-type P = {
+interface P {
     url: string;
     adapterUrl: string;
-};
+}
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {

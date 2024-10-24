@@ -3,7 +3,7 @@ import { ModuleCompute, ModuleDefinition } from '@nodescript/core/types';
 
 import { requireConnection } from '../lib/MongoDbConnection.js';
 
-type P = {
+interface P {
     connection: unknown;
     collection: string;
     filter: MongoFilter;
@@ -12,7 +12,7 @@ type P = {
     limit: number;
     skip: number;
     readPreference: MongoReadPreference;
-};
+}
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {

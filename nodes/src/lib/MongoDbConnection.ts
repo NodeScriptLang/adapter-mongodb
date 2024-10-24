@@ -22,9 +22,11 @@ export class MongoDbConnection {
         parsedUrl.password = '';
         const rpc = createHttpClient(mongoProtocol, {
             baseUrl: parsedUrl.href,
-            headers: secret ? {
-                authorization: `Bearer ${secret}`,
-            } : undefined,
+            headers: secret ?
+                {
+                    authorization: `Bearer ${secret}`,
+                } :
+                undefined,
         });
         Object.defineProperties(this, {
             databaseUrl: {

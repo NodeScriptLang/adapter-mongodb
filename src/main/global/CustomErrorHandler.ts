@@ -17,6 +17,7 @@ export class CustomErrorHandler implements HttpHandler {
 }
 
 export class WrappedMongoError extends Error {
+
     override name = 'MongoError';
     status = 500;
     details: any;

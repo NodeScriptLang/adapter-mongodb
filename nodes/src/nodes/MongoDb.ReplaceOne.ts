@@ -3,13 +3,13 @@ import { ModuleCompute, ModuleDefinition } from '@nodescript/core/types';
 
 import { requireConnection } from '../lib/MongoDbConnection.js';
 
-type P = {
+interface P {
     connection: unknown;
     collection: string;
     filter: MongoFilter;
     replacement: MongoDocument;
     upsert: boolean;
-};
+}
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {

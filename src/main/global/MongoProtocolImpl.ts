@@ -4,5 +4,7 @@ import { dep } from 'mesh-ioc';
 import { MongoDomainImpl } from './MongoDomainImpl.js';
 
 export class MongoProtocolImpl implements MongoProtocol {
+
     @dep() Mongo!: MongoDomainImpl;
+
 }

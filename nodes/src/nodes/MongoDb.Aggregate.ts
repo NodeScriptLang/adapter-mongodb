@@ -3,12 +3,12 @@ import { ModuleCompute, ModuleDefinition } from '@nodescript/core/types';
 
 import { requireConnection } from '../lib/MongoDbConnection.js';
 
-type P = {
+interface P {
     connection: unknown;
     collection: string;
     pipeline: any[];
     readPreference: MongoReadPreference;
-};
+}
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {
