@@ -52,10 +52,10 @@
     },
     "dependencies": {
         "@nodescript/errors": "^1.2.0",
-        "@nodescript/http-server": "^2.7.0",
+        "@nodescript/http-server": "^2.8.0",
         "@nodescript/logger": "^2.0.6",
         "@nodescript/metrics": "^1.5.0",
-        "@nodescript/microframework": "^1.13.1",
+        "@nodescript/microframework": "^1.14.0",
         "@nodescript/protocomm": "^1.1.0",
         "@types/ws": "^8.5.10",
         "airtight": "^5.7.2",
