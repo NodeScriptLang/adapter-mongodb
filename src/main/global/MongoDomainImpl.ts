@@ -1,12 +1,16 @@
 import { MongoAggregate, MongoDocument, MongoDomain, MongoFilter, MongoProjection, MongoReadPreference, MongoSort, MongoUpdate } from '@nodescript/adapter-mongodb-protocol';
-import { EJSON } from 'bson';
+import { BSON, EJSON } from 'bson';
+import { config } from 'mesh-config';
 import { dep } from 'mesh-ioc';
 
 import { ConnectionManager } from './ConnectionManager.js';
+import { MemoryLimitError } from './CustomErrorHandler.js';
 
 export class MongoDomainImpl implements MongoDomain {
 
     @dep() private connectionManager!: ConnectionManager;
+    @config({ default: 100 * 1024 * 1024 })
+        MEMORY_LIMIT!: number;
 
     async connect(req: {
         databaseUrl: string;
@@ -47,15 +51,28 @@ export class MongoDomainImpl implements MongoDomain {
         const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const filter = EJSON.deserialize(req.filter);
-        const documents = await col.find(filter, {
+
+        const cursor = col.find(filter, {
             projection: req.projection,
             sort: req.sort,
             limit: req.limit,
             skip: req.skip,
             readPreference: req.readPreference,
-        }).toArray();
+        }).batchSize(500);
+
+        const documents: any[] = [];
+        let totalSize = 0;
+        for await (const doc of cursor) {
+            const docSize = BSON.serialize(doc).byteLength;
+            if (totalSize + docSize >= this.MEMORY_LIMIT) {
+                throw new MemoryLimitError('Memory limit exceeded. Cannot complete query.');
+            }
+            totalSize += docSize;
+            documents.push(doc);
+        }
+
         return {
-            documents: EJSON.serialize(documents) as any[]
+            documents: EJSON.serialize(documents) as any[],
         };
     }
 

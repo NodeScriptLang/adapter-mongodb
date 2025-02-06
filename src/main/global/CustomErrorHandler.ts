@@ -30,3 +30,15 @@ export class WrappedMongoError extends Error {
     }
 
 }
+
+export class MemoryLimitError extends Error {
+
+    override name = 'MemoryLimitError';
+    status = 500;
+    details: any;
+
+    constructor(message: string) {
+        super(message);
+    }
+
+}
