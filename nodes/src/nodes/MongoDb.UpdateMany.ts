@@ -12,7 +12,7 @@ interface P {
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {
-    version: '2.2.1',
+    version: '2.2.2',
     moduleName: 'Mongo DB / Update Many',
     description: 'Updates documents matching criteria in specified MongoDB collection.',
     keywords: ['mongodb', 'database', 'update'],
