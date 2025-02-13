@@ -1,6 +1,6 @@
 {
     "name": "@nodescript/adapter-mongodb",
-    "version": "1.24.1",
+    "version": "1.24.3",
     "description": "MongoDB Adapter",
     "type": "module",
     "sideEffects": false,
@@ -52,10 +52,10 @@
     },
     "dependencies": {
         "@nodescript/errors": "^1.2.0",
-        "@nodescript/http-server": "^2.9.1",
+        "@nodescript/http-server": "^2.10.1",
         "@nodescript/logger": "^2.0.6",
         "@nodescript/metrics": "^1.7.1",
-        "@nodescript/microframework": "^1.15.1",
+        "@nodescript/microframework": "^1.15.3",
         "@nodescript/protocomm": "^1.2.0",
         "@types/ws": "^8.5.10",
         "airtight": "^5.7.2",
