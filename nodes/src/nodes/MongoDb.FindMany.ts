@@ -16,7 +16,7 @@ interface P {
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {
-    version: '2.2.3',
+    version: '2.2.4',
     moduleName: 'Mongo DB / Find Many',
     description: 'Finds documents in specified MongoDB collection.',
     keywords: ['mongodb', 'database', 'find', 'query'],
@@ -53,6 +53,7 @@ export const module: ModuleDefinition<P, R> = {
             schema: {
                 type: 'number',
                 default: 1000,
+                description: 'Default: 1000. Larger queries may result in memory issues and request failure. Limit query size to improve results.'
             },
         },
         skip: {

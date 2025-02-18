@@ -9,7 +9,7 @@ interface P {
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {
-    version: '2.2.5',
+    version: '2.2.6',
     moduleName: 'Mongo DB / Connect',
     description: 'Returns the connection required by other nodes.',
     keywords: ['mongodb', 'database', 'storage', 'connect'],

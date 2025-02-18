@@ -39,7 +39,7 @@
     "author": "Boris Okunskiy",
     "license": "ISC",
     "devDependencies": {
-        "@nodescript/adapter-mongodb-protocol": "^1.22.0",
+        "@nodescript/adapter-mongodb-protocol": "^1.24.1",
         "@nodescript/cli": "^1.8.0",
         "@nodescript/eslint-config": "^2.0.1",
         "@types/mocha": "^10.0.6",
@@ -56,7 +56,7 @@
         "@nodescript/logger": "^2.0.6",
         "@nodescript/metrics": "^1.7.1",
         "@nodescript/microframework": "^1.15.3",
-        "@nodescript/protocomm": "^1.1.0",
+        "@nodescript/protocomm": "^1.2.0",
         "@types/ws": "^8.5.10",
         "airtight": "^5.7.2",
         "bson": "^6.6.0",

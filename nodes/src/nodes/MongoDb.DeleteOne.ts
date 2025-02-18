@@ -11,7 +11,7 @@ interface P {
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {
-    version: '2.2.1',
+    version: '2.2.2',
     moduleName: 'Mongo DB / Delete One',
     description: 'Deletes a single document matching criteria in specified MongoDB collection.',
     keywords: ['mongodb', 'database', 'delete'],
