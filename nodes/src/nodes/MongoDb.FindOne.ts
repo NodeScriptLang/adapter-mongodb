@@ -14,7 +14,7 @@ interface P {
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {
-    version: '2.2.4',
+    version: '2.2.5',
     moduleName: 'Mongo DB / Find One',
     description: 'Finds one document in specified MongoDB collection.',
     keywords: ['mongodb', 'database', 'find', 'query'],
