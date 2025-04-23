@@ -139,6 +139,10 @@ export const MongoDomain: DomainDef<MongoDomain> = {
                     ...MongoProjectionSchema.schema,
                     optional: true,
                 },
+                sort: {
+                    ...MongoSortSchema.schema,
+                    optional: true,
+                },
                 readPreference: {
                     ...MongoReadPreferenceSchema.schema,
                     optional: true,
