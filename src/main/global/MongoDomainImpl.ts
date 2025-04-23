@@ -20,6 +20,7 @@ export class MongoDomainImpl implements MongoDomain {
         collection: string;
         filter: MongoFilter;
         projection?: MongoProjection;
+        sort?: MongoSort;
         readPreference?: MongoReadPreference;
     }): Promise<{ document: any }> {
         const connection = await this.getConnection(req.databaseUrl);
@@ -27,6 +28,7 @@ export class MongoDomainImpl implements MongoDomain {
         const filter = EJSON.deserialize(req.filter);
         const document = await col.findOne(filter, {
             projection: req.projection,
+            sort: req.sort,
             readPreference: req.readPreference,
         });
         return {

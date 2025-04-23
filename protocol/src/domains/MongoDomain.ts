@@ -22,6 +22,7 @@ export interface MongoDomain {
         databaseUrl: string;
         collection: string;
         filter: MongoFilter;
+        sort?: MongoSort;
         projection?: MongoProjection;
         readPreference?: MongoReadPreference;
     }): Promise<{
