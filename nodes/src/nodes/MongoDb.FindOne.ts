@@ -1,4 +1,4 @@
-import { MongoFilter, MongoProjection, MongoReadPreference, MongoReadPreferenceSchema } from '@nodescript/adapter-mongodb-protocol';
+import { MongoFilter, MongoProjection, MongoReadPreference, MongoReadPreferenceSchema,MongoSort } from '@nodescript/adapter-mongodb-protocol';
 import { ModuleCompute, ModuleDefinition } from '@nodescript/core/types';
 
 import { requireConnection } from '../lib/MongoDbConnection.js';
@@ -8,6 +8,7 @@ interface P {
     collection: string;
     filter: MongoFilter;
     projection: MongoProjection;
+    sort?: MongoSort;
     readPreference: MongoReadPreference;
 }
 type R = Promise<unknown>;
@@ -37,6 +38,14 @@ export const module: ModuleDefinition<P, R> = {
                 type: 'object',
                 properties: {},
                 additionalProperties: { type: 'any' },
+            },
+
+        },
+        sort: {
+            schema: {
+                type: 'object',
+                properties: {},
+                additionalProperties: { type: 'any' },
             }
         },
         readPreference: {
@@ -56,12 +65,14 @@ export const compute: ModuleCompute<P, R> = async params => {
     const connection = requireConnection(params.connection);
     const collection = params.collection;
     const filter = params.filter;
+    const sort = params.sort ;
     const projection = Object.keys(params.projection).length > 0 ? params.projection : undefined;
     const { document } = await connection.Mongo.findOne({
         databaseUrl: connection.databaseUrl,
         collection,
         filter,
         projection,
+        sort,
         readPreference: params.readPreference || 'primary',
     });
     return document;
