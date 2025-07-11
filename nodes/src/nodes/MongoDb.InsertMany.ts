@@ -7,6 +7,7 @@ interface P {
     connection: unknown;
     collection: string;
     documents: MongoDocument[];
+    ordered?: boolean;
 }
 type R = Promise<unknown>;
 
@@ -33,6 +34,9 @@ export const module: ModuleDefinition<P, R> = {
                 },
             },
         },
+        ordered: {
+            schema: { type: 'boolean', optional: true },
+        },
     },
     result: {
         async: true,
@@ -44,12 +48,12 @@ export const module: ModuleDefinition<P, R> = {
 
 export const compute: ModuleCompute<P, R> = async params => {
     const connection = requireConnection(params.connection);
-    const collection = params.collection;
-    const documents = params.documents;
+    const { collection, documents, ordered } = params;
     const res = await connection.Mongo.insertMany({
         databaseUrl: connection.databaseUrl,
         collection,
         documents,
+        ordered,
     });
     return res;
 };

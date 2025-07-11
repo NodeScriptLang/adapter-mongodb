@@ -79,11 +79,12 @@ export class MongoDomainImpl implements MongoDomain {
         databaseUrl: string;
         collection: string;
         documents: any[];
+        ordered?: boolean;
     }): Promise<{ insertedIds: string[] }> {
         const connection = await this.getConnection(req.databaseUrl);
         const col = connection.db().collection(req.collection);
         const documents = EJSON.deserialize(req.documents);
-        const res = await col.insertMany(documents);
+        const res = await col.insertMany(documents, { ordered: req.ordered });
         const insertedIds: string[] = [];
         for (let i = 0; i < res.insertedCount; i++) {
             insertedIds.push(res.insertedIds[i].toString());

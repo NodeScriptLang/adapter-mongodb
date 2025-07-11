@@ -54,6 +54,7 @@ export interface MongoDomain {
         databaseUrl: string;
         collection: string;
         documents: MongoDocument[];
+        ordered?: boolean;
     }): Promise<{
         insertedIds: string[];
     }>;
@@ -209,6 +210,7 @@ export const MongoDomain: DomainDef<MongoDomain> = {
                     type: 'array',
                     items: MongoDocumentSchema.schema
                 },
+                ordered: { type: 'boolean', optional: true },
             },
             returns: {
                 insertedIds: {
