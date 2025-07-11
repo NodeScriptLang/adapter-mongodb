@@ -12,7 +12,7 @@ interface P {
 type R = Promise<unknown>;
 
 export const module: ModuleDefinition<P, R> = {
-    version: '2.2.3',
+    version: '2.2.4',
     moduleName: 'Mongo DB / Insert Many',
     description: 'Inserts multiple documents into specified MongoDB collection.',
     keywords: ['mongodb', 'database', 'insert'],
@@ -36,6 +36,7 @@ export const module: ModuleDefinition<P, R> = {
         },
         ordered: {
             schema: { type: 'boolean', optional: true },
+            advanced: true,
         },
     },
     result: {
